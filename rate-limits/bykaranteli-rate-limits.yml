@@ -1,0 +1,79 @@
+generated: '2026-08-09'
+method: searched
+source: https://bykaranteli.com/developers
+also_searched:
+  - https://bykaranteli.com/api/v1/public/manifest
+observed: 'live response headers, 2026-08-09'
+
+limit_count: 3
+
+rate_limits:
+  - name: Public API (documented on /developers)
+    scope: per IP
+    limit: 20
+    window: 1 minute
+    applies_to: '/api/public/*, /api/v1/public/*'
+    on_exceed:
+      status: 429
+      header: Retry-After
+    source: 'https://bykaranteli.com/developers — "Rate limit 20 / min / IP · 429 on exceed with retry-after"'
+
+  - name: Public API (declared in the self-describing manifest)
+    scope: per IP
+    limit: null
+    window: null
+    applies_to: '/api/v1/public/* (except /me)'
+    statement: 'Public endpoints have no per-IP rate limit.'
+    source: 'https://bykaranteli.com/api/v1/public/manifest — conventions.rate_limit'
+
+  - name: Member / key-authenticated API
+    scope: per API key
+    limit: 60
+    window: 1 minute
+    applies_to: '/api/v1/me/*, /api/v1/public/me'
+    auth: 'Bearer API key'
+    source: 'https://bykaranteli.com/api/v1/public/manifest — conventions.rate_limit'
+
+  - name: x402 paid endpoints
+    scope: per call
+    limit: null
+    window: null
+    applies_to: '/api/x402/*'
+    statement: >-
+      Not rate-limited by count — metered by payment. Each successful response
+      settles a fixed USDC amount ($0.002-$0.010); a failed response settles
+      nothing.
+    source: https://bykaranteli.com/api/x402
+
+conflict:
+  present: true
+  detail: >-
+    The /developers page states a hard 20 req/min/IP limit with a 429; the
+    machine-readable manifest states public endpoints have NO per-IP limit. Both
+    are first-party and current. An agent reading the manifest and a developer
+    reading the docs will size their client differently.
+  recommendation: 'Provider should reconcile the two, and emit the limit in headers so neither has to be trusted.'
+
+headers:
+  ratelimit_headers: none
+  observed_on: 'GET https://bykaranteli.com/api/public/pressure?limit=2 (200)'
+  present: [cache-control, access-control-allow-origin, access-control-allow-methods, access-control-max-age, vary]
+  absent: [RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset, X-RateLimit-Limit, X-RateLimit-Remaining, Retry-After]
+  note: >-
+    No RFC 9239 / draft RateLimit headers on a successful call. A client cannot
+    discover its remaining budget before it is cut off — it can only react to a
+    429. This is the single cheapest agent-readiness fix on this API.
+
+caching_as_throttle:
+  note: >-
+    Per-endpoint Cache-Control TTLs (declared as cache_seconds in the manifest:
+    10s health, 60s most, 300s manifest/sitemap) plus a Cloudflare edge do most
+    of the load shedding, which is consistent with the manifest's claim that no
+    per-IP limit is needed.
+
+fair_use:
+  data: read-only, no PII, no trading actions exposed
+  commercial_use: allowed
+  attribution: 'a visible link back to bykaranteli.com or the source page is appreciated when embedding'
+  prohibited: 'rebranding ByKaranteli numbers as an in-house backtest; scraping /dashboard/*, /api/admin/*, /api/terminal/*'
+  source: https://bykaranteli.com/developers

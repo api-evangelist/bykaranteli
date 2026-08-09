@@ -1,0 +1,43 @@
+generated: '2026-08-09'
+method: generated
+source: mcp/bykaranteli-mcp-tools.json + openapi/bykaranteli-x402-openapi.json + https://bykaranteli.com/developers
+
+description: >-
+  Packaged agent skills for the ByKaranteli crypto-derivatives data estate. Each
+  is grounded in real, verified surfaces — MCP tool names returned by a live
+  anonymous tools/list, and operationIds present in the provider's published
+  OpenAPI. No operation or tool named in these skills was invented.
+
+skills:
+  - file: bykaranteli-funding-carry-scan.md
+    name: bykaranteli-funding-carry-scan
+    summary: 'Find a cross-exchange funding carry candidate on the free surface, then buy settled funding history to test whether the spread persists.'
+    tools: [get_funding_arbitrage, get_funding_heatmap, get_pressure_scores, get_open_interest]
+    operations: [funding-history, oi-history]
+    cost: 'free through step 3; $0.010 if both paid calls are made'
+
+  - file: bykaranteli-liquidation-forensics.md
+    name: bykaranteli-liquidation-forensics
+    summary: 'Reconstruct a liquidation cascade: daily totals and cascade shape free, then the liquidation map and the raw millisecond event tape for cents.'
+    tools: [get_liquidations, get_liquidation_cascades, get_open_interest, get_flow_toxicity]
+    operations: [liqmap-levels, liquidations-raw, spot-microstructure]
+    cost: 'free through step 3; $0.005-$0.025 depending on depth'
+
+  - file: bykaranteli-x402-pay-per-call.md
+    name: bykaranteli-x402-pay-per-call
+    summary: 'The payment skill itself — read the free catalog, decode the 402 x402 v2 challenge, settle USDC on Solana or Base, retry, and cap the spend.'
+    tools: []
+    operations: [x402Catalog, flow-vpin, dvol-history, slippage-history, listings-history, funding-history, oi-history, cot-history, premium-history, options-flow, options-oi-history, liqmap-levels, liquidations-raw, spot-microstructure]
+    cost: 'catalog free; $0.002-$0.010 per priced call'
+
+provider_published_skills:
+  searched: true
+  found: false
+  checked:
+    - https://bykaranteli.com/llms.txt
+    - https://github.com/bykarantelicom/bykaranteli-mcp
+    - https://bykaranteli.com/developers
+  note: >-
+    No provider-published Agent Skill or AGENTS.md was found. ByKaranteli does
+    publish an llms.txt and an MCP server, which is where its agent posture
+    currently lives.

@@ -1,0 +1,61 @@
+generated: '2026-08-09'
+method: probed
+source: live GET against https://bykaranteli.com, 2026-08-09
+note: >-
+  Real, unmodified responses captured from the live public API. Nothing here is
+  a mock or a hand-written sample — every file is what the endpoint actually
+  returned on the date above. Values are market data and will be stale; the
+  SHAPE is the artifact. Captured because the published OpenAPI declares no
+  components.schemas and no response examples, so these are the only concrete
+  payload contracts a client has.
+
+examples:
+  - file: bykaranteli-x402-payment-required.json
+    kind: 402 challenge
+    url: https://bykaranteli.com/api/x402/flow-vpin
+    http_status: 402
+    description: >-
+      The base64 `payment-required` header, decoded. x402 v2 payment
+      requirements: resource, accepts[] for Solana and Base, and a bazaar
+      extension carrying a JSON-Schema-2020-12 description of the call's input
+      and output. This is the closest thing the paid surface has to a schema.
+
+  - file: bykaranteli-public-indices.json
+    kind: success response
+    url: https://bykaranteli.com/api/public/indices
+    http_status: 200
+    description: 'All market indices in one payload — Retail Euphoria, Fear & Greed, CoinGecko global, DeFiLlama stablecoin flow, Altcoin Season Index.'
+
+  - file: bykaranteli-public-pressure.json
+    kind: success response
+    url: 'https://bykaranteli.com/api/public/pressure?limit=3'
+    http_status: 200
+    description: 'Composite 0-100 derivatives pressure per symbol with components (oi24hPct, oi4hPct, oi1hPct, fundingRatePct, basisPct) and a plain-language explainer array.'
+
+  - file: bykaranteli-public-recent.json
+    kind: success response
+    url: 'https://bykaranteli.com/api/public/recent?hours=24&limit=3'
+    http_status: 200
+    description: 'Recent closed signals with side, outcome and net bps, plus 24h win/loss/timeout counters.'
+
+  - file: bykaranteli-v1-health.json
+    kind: success response
+    url: https://bykaranteli.com/api/v1/public/health
+    http_status: 200
+    description: 'Uptime probe with DB reachability and last signal-eval freshness.'
+
+  - file: bykaranteli-v1-leaderboard.json
+    kind: success response
+    url: 'https://bykaranteli.com/api/v1/public/leaderboard?window=90&top=3'
+    http_status: 200
+    description: 'Strategy leaderboard on the versioned surface. Note the snake_case field naming here versus camelCase on the unversioned /api/public/* generation — the two generations do not share a serialization convention.'
+
+observed_divergence:
+  finding: >-
+    /api/public/* returns camelCase (generatedAt, winRatePct, profitFactorNet)
+    while /api/v1/public/* returns snake_case (generated_at, win_rate_pct,
+    profit_factor_net). Same data, same host, two conventions. A client written
+    against the docs will break when moved to the versioned surface.
+  evidence:
+    - {url: 'https://bykaranteli.com/api/public/recent?hours=24&limit=3', status: 200}
+    - {url: 'https://bykaranteli.com/api/v1/public/leaderboard?window=90&top=3', status: 200}

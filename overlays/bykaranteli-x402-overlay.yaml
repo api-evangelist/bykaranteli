@@ -1,0 +1,128 @@
+generated: '2026-08-09'
+method: generated
+source: openapi/bykaranteli-x402-openapi.json
+
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the ByKaranteli x402 data API
+  version: 1.0.0
+extends: https://bykaranteli.com/openapi.json
+
+x-notes: >-
+  Non-destructive. Every action below adds classification or documentation that
+  the published spec omits; none changes an existing path, operationId, price or
+  response. Prices, networks and descriptions are copied verbatim from the
+  provider's own x-payment-info and /api/x402 catalog — nothing is invented.
+  The original spec is never mutated; apply this overlay to get the enriched view.
+
+actions:
+  - target: $.info
+    update:
+      x-evidence:
+        fetched: '2026-08-09'
+        url: https://bykaranteli.com/openapi.json
+        http_status: 200
+        content_type: application/json
+      x-surface-scope: >-
+        This document describes ONLY the 13 pay-per-call /api/x402/* endpoints
+        plus the free catalog. The free public REST surface
+        (/api/public/*, /api/v1/public/*) is real, live and documented at
+        /developers and /api/v1/public/manifest, but has no OpenAPI.
+      x-related-surfaces:
+        public_manifest: https://bykaranteli.com/api/v1/public/manifest
+        mcp_server: https://mcp.bykaranteli.com
+        llms_txt: https://bykaranteli.com/llms.txt
+        datasets: https://bykaranteli.com/data
+
+  - target: $
+    update:
+      tags:
+        - {name: catalog, description: 'Free machine-readable discovery of the paid surface.'}
+        - {name: liquidations, description: 'Liquidation maps, levels and raw recorded liquidation events.'}
+        - {name: options, description: 'Deribit options tape, open interest by strike/expiry and implied volatility indices.'}
+        - {name: funding, description: 'Settled funding rate history per symbol and venue.'}
+        - {name: open-interest, description: 'Open interest history normalised across symbols.'}
+        - {name: microstructure, description: 'VPIN toxicity, slippage ladders and taker-split minute bars.'}
+        - {name: positioning, description: 'CFTC Commitments of Traders and spot-premium positioning reads.'}
+        - {name: reference, description: 'Instrument listing and delisting events.'}
+
+  - target: $.paths['/api/x402'].get
+    update:
+      tags: [catalog]
+      x-agentic-access:
+        action_class: read
+        consequence: none
+        cost_usd: 0
+        escalation: none
+
+  - target: $.paths['/api/x402/liqmap-levels'].get
+    update:
+      tags: [liquidations]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.005, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/options-flow'].get
+    update:
+      tags: [options]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.005, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/flow-vpin'].get
+    update:
+      tags: [microstructure]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.002, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/premium-history'].get
+    update:
+      tags: [positioning]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.005, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/cot-history'].get
+    update:
+      tags: [positioning]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.005, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/liquidations-raw'].get
+    update:
+      tags: [liquidations]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.010, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/oi-history'].get
+    update:
+      tags: [open-interest]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.005, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/funding-history'].get
+    update:
+      tags: [funding]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.005, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/options-oi-history'].get
+    update:
+      tags: [options]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.005, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/dvol-history'].get
+    update:
+      tags: [options]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.002, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/slippage-history'].get
+    update:
+      tags: [microstructure]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.002, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/listings-history'].get
+    update:
+      tags: [reference]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.002, escalation: 'payment approval'}
+
+  - target: $.paths['/api/x402/spot-microstructure'].get
+    update:
+      tags: [microstructure]
+      x-agentic-access: {action_class: read, consequence: spend, cost_usd: 0.010, escalation: 'payment approval'}
+
+x-gaps-for-provider:
+  - 'No components.schemas: every operation returns an undescribed 200. The 402 challenge already carries a bazaar JSON Schema per endpoint — promoting those into the spec would cost the provider nothing and give every operation a response schema.'
+  - 'No parameters are declared, though the descriptions clearly imply symbol/asset/days inputs.'
+  - 'No securitySchemes; the payment gate is expressed only as an x-payment-info extension and an undocumented 402.'
+  - 'No 4xx/5xx responses beyond 402.'
+  - 'No tags in the original document — supplied above.'

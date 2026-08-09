@@ -1,0 +1,62 @@
+generated: '2026-08-09'
+method: searched
+source: https://registry.npmjs.org/bykaranteli-mcp
+also_searched:
+  - https://www.npmjs.com/package/bykaranteli-mcp
+  - https://api.github.com/users/bykarantelicom/repos
+  - https://registry.modelcontextprotocol.io/v0/servers?search=bykaranteli
+  - https://bykaranteli.com/developers
+  - 'PyPI, Maven Central, NuGet, pkg.go.dev, RubyGems, Packagist, crates.io — no first-party package found'
+
+packages:
+  - language: javascript
+    runtime: node
+    registry: npm
+    name: bykaranteli-mcp
+    url: https://www.npmjs.com/package/bykaranteli-mcp
+    version: 0.7.3
+    versions_published: 12
+    first_published: '2026-07-06'
+    last_published: '2026-08-09'
+    license: MIT
+    official: true
+    repository: https://github.com/bykarantelicom/bykaranteli-mcp
+    homepage: https://bykaranteli.com/developers
+    bin: {bykaranteli-mcp: dist/index.js}
+    install: 'npx -y bykaranteli-mcp'
+    kind: mcp-server
+    description: >-
+      Official MCP server exposing the free ByKaranteli public API as 20
+      read-only tools (funding rates, funding arbitrage, OI pressure, Fear &
+      Greed, BTC dominance, verified signal performance). No API key.
+      Requires Node 18+.
+
+conventional_sdks:
+  present: false
+  note: >-
+    ByKaranteli ships NO conventional client SDK in any language. The public API
+    is unauthenticated JSON over HTTPS and the docs teach it with raw `curl` and
+    a plain `fetch()` embed snippet. The one published package is the MCP server
+    above — an agent transport, not a REST client library. This is a real gap:
+    a provider whose whole positioning is machine consumption has no typed
+    client for the humans wiring it up.
+
+datasets:
+  - name: crypto-datasets
+    url: https://github.com/bykarantelicom/crypto-datasets
+    license: CC0-1.0
+    official: true
+    description: >-
+      Free CC0 crypto datasets updated daily — BTC dominance, Fear & Greed and
+      Altcoin Season Index history, per-symbol daily stats, and a six-exchange
+      perpetual listing/delisting tracker. Mirrors https://bykaranteli.com/data.
+    api_mirror: https://bykaranteli.com/api/v1/public/datasets/[name]
+
+github:
+  account: https://github.com/bykarantelicom
+  account_type: user
+  note: >-
+    `bykarantelicom` is a GitHub USER account, not an organization (api.github.com/orgs/bykarantelicom returns 404).
+    Only two of its 20 repositories are first-party — `bykaranteli-mcp` and
+    `crypto-datasets`; the rest are forks of public awesome-lists (x402, MCP
+    servers, quant, ERC-8004, llms-txt-hub).

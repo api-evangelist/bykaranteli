@@ -1,0 +1,94 @@
+generated: '2026-08-09'
+method: searched
+source: https://bykaranteli.com/pricing
+http_status: 200
+fetched: '2026-08-09'
+
+model: 'prepaid finite terms — no auto-renew, no card on file'
+currency: USD
+settlement: 'pay once in USDC or USDT on Solana'
+plan_count: 5
+
+plans:
+  - name: Public API
+    id: free
+    price: 0
+    period: null
+    signup_required: false
+    features:
+      - 'unauthenticated read-only JSON across /api/public/* and /api/v1/public/*'
+      - 'CSV via ?format=csv and CC0 datasets at /api/v1/public/datasets/[name]'
+      - 'RSS feeds (/feed.xml, per-symbol, per-strategy)'
+      - 'hosted MCP server at https://mcp.bykaranteli.com — 20 read-only tools, no key'
+      - 'embeddable widgets at /embed/pressure/[symbol]'
+    note: 'Explicitly free and unmetered: "every live snapshot stays free".'
+
+  - name: 1 month
+    id: P1M
+    price: 29
+    period: P1M
+    effective_monthly: 29
+    savings: 0
+
+  - name: 3 months
+    id: P3M
+    price: 79
+    list_price: 87
+    period: P3M
+    effective_monthly: 26.33
+    savings: 8
+
+  - name: 6 months
+    id: P6M
+    price: 149
+    list_price: 174
+    period: P6M
+    effective_monthly: 24.83
+    savings: 25
+
+  - name: 12 months
+    id: P12M
+    price: 279
+    list_price: 352.83
+    period: P12M
+    effective_monthly: 22.93
+    savings: 73.83
+    badge: Most saved
+
+paid_plan_entitlements:
+  identical_across_terms: true
+  statement: 'Every plan unlocks the full engine. The only thing that changes is duration and price.'
+  includes:
+    - full terminal workspace
+    - unlimited watchlist
+    - Telegram alerts
+    - full LiqMap intervals
+    - personalized digest
+    - public JSON API
+  note: >-
+    No feature is gated behind a higher tier — a deliberate anti-tiering stance
+    stated on the pricing page. Note that "public JSON API" is listed as a paid
+    entitlement even though the API is free to anyone; the paid item is the
+    member key surface (/api/v1/me/*).
+
+renewal:
+  auto_renew: false
+  statement: >-
+    "Every plan is a finite prepaid period (30 / 90 / 180 / 365 days). When the
+    period ends, access ends." Nothing on a card or in a wallet auto-charges.
+
+usage_based:
+  present: true
+  surface: /api/x402/*
+  detail: finops/bykaranteli-finops.yml
+
+trial:
+  type: free preview
+  url: https://bykaranteli.com/try-digest
+  detail: 'One free digest email for any 5 symbols, no signup.'
+
+affiliate_revenue:
+  disclosed: true
+  partners: [BingX, Bitunix, OKX, HTX, Gate.io, CoinTR]
+  model: 'sponsored exchange referrals; fee discount rebated by the exchange (30-45% quoted per partner)'
+  note: 'Disclosed in the site footer and on the pricing page.'

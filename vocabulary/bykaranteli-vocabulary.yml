@@ -1,0 +1,56 @@
+generated: '2026-08-09'
+method: searched
+source: https://bykaranteli.com/glossary
+fetched: '2026-08-09'
+http_status: 200
+
+name: ByKaranteli crypto derivatives glossary
+description: >-
+  The provider's published, per-term glossary of crypto-derivatives and
+  signal-performance vocabulary. Each term has its own page; several are backed
+  by live data rather than a static definition. Definitions below are the
+  provider's own words, taken verbatim from each term page's meta description.
+  Terms marked proprietary are ByKaranteli's own constructs and are the ones an
+  integrator most needs defined, because they appear as fields in API responses.
+
+term_count: 18
+locales: [en, zh-Hans]
+locale_note: 'Every term also has a Simplified Chinese twin under /zh/glossary/<term>.'
+
+terms:
+  - {term: Altcoin Season, slug: altcoin-season, url: 'https://bykaranteli.com/glossary/altcoin-season', definition: 'A market phase where altcoins broadly outperform Bitcoin, visible as falling BTC dominance during a rally.'}
+  - {term: Altcoin Season Index, slug: altcoin-season-index, url: 'https://bykaranteli.com/glossary/altcoin-season-index', live: true, definition: 'How many of the top 50 altcoins are beating BTC over 90 days; the current altseason or Bitcoin season reading.'}
+  - {term: Basis, slug: basis, url: 'https://bykaranteli.com/glossary/basis', definition: 'Price gap between a futures contract and its underlying spot index.', appears_in_api: 'components.basisPct on /api/public/pressure'}
+  - {term: Basis Points (bps), slug: basis-points, url: 'https://bykaranteli.com/glossary/basis-points', definition: '1 basis point = 0.01%. We use bps as the canonical unit for signal net return.', appears_in_api: 'netBps, avgNetBps, sumNetBps, maxDrawdownBps across performance endpoints'}
+  - {term: Bitcoin Dominance (BTC.D), slug: btc-dominance, url: 'https://bykaranteli.com/glossary/btc-dominance', live: true, definition: "BTC's current share of total crypto market cap, the 24h change, what rising or falling dominance means, and the BTCDOMUSDT perp."}
+  - {term: Dollar Cost Averaging (DCA), slug: dca, url: 'https://bykaranteli.com/glossary/dca', definition: 'Buying a fixed USD amount of an asset on a fixed schedule regardless of price.'}
+  - {term: Fear & Greed Index, slug: fear-and-greed, url: 'https://bykaranteli.com/glossary/fear-and-greed', live: true, definition: 'The current 0-100 value with its classification, a 30-day history chart, and how the index is calculated.', appears_in_api: 'fearGreed on /api/public/indices; get_market_indices MCP tool'}
+  - {term: Funding Rate, slug: funding-rate, url: 'https://bykaranteli.com/glossary/funding-rate', live: true, definition: "What funding rates mean on perpetual futures, plus a live snapshot: BTC's current 8h rate, the market median, and today's most extreme positive and negative Binance perps.", appears_in_api: 'fundingRatePct; funding-history x402 operation'}
+  - {term: Liquidation, slug: liquidation, url: 'https://bykaranteli.com/glossary/liquidation', definition: 'Forced closure of a leveraged position when its margin is exhausted.'}
+  - {term: Liquidation Heatmap, slug: liquidation-heatmap, url: 'https://bykaranteli.com/glossary/liquidation-heatmap', definition: 'A chart estimating where leveraged futures positions would be forcibly closed, shown as price zones colored by intensity.', appears_in_api: 'liqmap-levels x402 operation; /api/liqmap/public'}
+  - {term: Long/Short Ratio, slug: long-short-ratio, url: 'https://bykaranteli.com/glossary/long-short-ratio', definition: 'The ratio of accounts or positions long versus short a perpetual. Extremes flag crowded trades that often resolve violently.'}
+  - {term: Mark Price, slug: mark-price, url: 'https://bykaranteli.com/glossary/mark-price', live: true, definition: 'What mark price means on perpetual futures and why it differs from last price, plus live Binance BTCUSDT and ETHUSDT mark price, index price and basis.'}
+  - {term: Open Interest, slug: open-interest, url: 'https://bykaranteli.com/glossary/open-interest', live: true, definition: "What open interest means in crypto futures, plus live data: BTCUSDT's 24h OI change and the biggest OI gainers and losers across Binance USDT-M perps.", appears_in_api: 'oi24hPct/oi4hPct/oi1hPct; oi-history x402 operation'}
+  - {term: Pressure Score, slug: pressure-score, url: 'https://bykaranteli.com/glossary/pressure-score', proprietary: true, definition: 'Our proprietary 0-100 composite of derivatives stress per symbol.', appears_in_api: 'score on /api/public/pressure; get_pressure_scores MCP tool'}
+  - {term: Profit Factor, slug: profit-factor, url: 'https://bykaranteli.com/glossary/profit-factor', definition: 'Ratio of gross winning trades to gross losing trades. Above 1 means the strategy is net positive.', appears_in_api: 'profitFactorNet / profit_factor_net'}
+  - {term: Slippage, slug: slippage, url: 'https://bykaranteli.com/glossary/slippage', definition: 'Difference between the intended execution price and the actual filled price.', appears_in_api: 'slippage-history x402 operation'}
+  - {term: Smart Money, slug: smart-money, url: 'https://bykaranteli.com/glossary/smart-money', definition: 'Binance top-trader positioning, used as a contrarian or confirmatory signal vs retail.'}
+  - {term: Win Rate, slug: win-rate, url: 'https://bykaranteli.com/glossary/win-rate', definition: 'Percentage of trades that closed profitably.', appears_in_api: 'winRatePct / win_rate_pct'}
+
+proprietary_terms_not_in_glossary:
+  - {term: Retail Euphoria Index, note: 'Returned as `euphoria` by /api/public/indices and /api/public/euphoria and by get_market_indices. Composite of Fear & Greed + trending memes + BTC dominance + top-30 crowd positioning. Documented on /developers and /indices but has no glossary entry.'}
+  - {term: PsiCharge, note: 'The get_psi_charge MCP tool and the /charge page. Stablecoin charge state. No glossary entry and no definition found on the developer surface — undefined vocabulary in a shipped tool name.'}
+  - {term: VPIN, note: 'Volume-Synchronized Probability of Informed Trading. Central to flow-vpin and get_flow_toxicity, described as "order flow toxicity" but never defined in the glossary.'}
+  - {term: Composite Score, note: 'Leaderboard ranking = PF x sqrt(trades/25) x winness, per /developers. Formula published, term not in the glossary.'}
+  - {term: Regime / regimeLabel, note: 'Direction-aware regime enum on /api/public/pressure (e.g. SHORT_RAMP, "Net short bias building"). No published enumeration of the possible regimes.'}
+
+methodology:
+  url: https://bykaranteli.com/methodology
+  note: 'Eligibility contract, deterministic tie-breaks and fee model — the semantic backing for every performance field.'
+
+gap: >-
+  The five most load-bearing terms in the API response bodies — Retail Euphoria,
+  PsiCharge, VPIN, composite score and the regime enum — are exactly the ones
+  the glossary does not cover. The glossary defines the industry-standard terms
+  a reader could look up anywhere, and skips the proprietary ones only
+  ByKaranteli can define.

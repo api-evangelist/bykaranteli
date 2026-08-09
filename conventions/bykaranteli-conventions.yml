@@ -1,0 +1,136 @@
+generated: '2026-08-09'
+method: searched
+source: https://bykaranteli.com/api/v1/public/manifest
+also_searched:
+  - https://bykaranteli.com/developers
+  - https://bykaranteli.com/openapi.json
+observed: 'live response headers, 2026-08-09'
+
+auth_style:
+  public: none
+  member: 'Bearer API key (Authorization header, or ?api_key= / ?token=)'
+  paid: 'x402 USDC micropayment per call (HTTP 402 challenge + X-PAYMENT retry)'
+  detail: authentication/bykaranteli-authentication.yml
+
+idempotency:
+  supported: false
+  keys: none
+  reason: >-
+    The entire public surface is GET-only and read-only — HTTP-safe and
+    naturally idempotent, so no Idempotency-Key header exists or is needed. The
+    one non-idempotent operation in the estate is an x402 PAYMENT, and x402 v2
+    handles replay at the settlement layer (`maxTimeoutSeconds: 300` per
+    accepted payment requirement), not with an application idempotency key.
+  note: >-
+    No Idempotency pointer is emitted in apis.yml — there is no idempotency
+    mechanism to point at. Recording the absence honestly rather than claiming
+    a control the provider does not ship.
+
+pagination:
+  style: 'limit/window truncation — no cursors, no page tokens, no Link header'
+  params:
+    - {name: limit, applies_to: '/api/public/pressure, /api/v1/public/leaderboard, /api/v1/public/ideas, /api/v1/public/series', range: '1-200 (pressure), 1-100 (others)'}
+    - {name: window, applies_to: 'leaderboard, strategies, symbols', range: '1-365 days, default 90'}
+    - {name: top, applies_to: '/api/v1/public/leaderboard', range: '1-100 rows, default 15'}
+    - {name: recent, applies_to: 'strategies, symbols', range: '1-50 rows, default 20'}
+    - {name: hours, applies_to: '/api/public/recent', range: '1-168, default 24'}
+    - {name: since_days, applies_to: '/api/v1/public/ideas', range: '1-365'}
+    - {name: sparkline_days, applies_to: '/api/v1/public/leaderboard', range: '1-90, off by default'}
+  note: >-
+    Collections are bounded by row caps rather than paged. There is no
+    documented way to walk past the cap on the free surface; deep history is
+    what the x402 endpoints sell.
+
+filtering:
+  - {name: symbol, note: 'uppercase ticker, e.g. BTCUSDT; MCP tools validate ^[A-Z0-9]{2,20}$'}
+  - {name: side, values: [long, short], applies_to: /api/public/pressure}
+  - {name: sort, values: [hot, new], applies_to: /api/v1/public/ideas}
+  - {name: asset, values: [BTC, ETH], applies_to: 'ETF flow tools'}
+
+content_negotiation:
+  default: application/json
+  alternates:
+    - {format: csv, how: 'append ?format=csv', applies_to: 'documented as a site-wide option; datasets also expose .csv paths directly'}
+    - {format: rss, how: '/feed.xml, /symbols/[symbol]/feed.xml, /strategies/[strategy]/feed.xml', media_type: application/rss+xml}
+
+caching:
+  header: 'Cache-Control: public, max-age=N, s-maxage=N (CDN-safe)'
+  observed: 'Cache-Control: public, max-age=60, s-maxage=180 on /api/public/pressure'
+  per_endpoint_ttl: 'declared per endpoint in the manifest as cache_seconds (0 for /me, 10 for health, 60 for most, 300 for manifest/sitemap)'
+  edge: Cloudflare (cf-cache-status header present)
+
+cors:
+  allow_origin: '*'
+  allow_methods: [GET, OPTIONS]
+  allow_headers: [Content-Type]
+  max_age: 86400
+  preflight: supported
+
+rate_limit_signaling:
+  headers: none observed
+  detail: rate-limits/bykaranteli-rate-limits.yml
+  note: >-
+    No RateLimit-* or X-RateLimit-* headers were returned on a live public call.
+    A client learns its budget only from the docs, and learns it was exceeded
+    only from a 429 + Retry-After.
+
+versioning:
+  scheme: 'path prefix, partially adopted'
+  versions: ['/api/public/* (unversioned, legacy)', '/api/v1/public/* (versioned)', '/api/x402/* (unversioned)']
+  spec_version: '1.0.0 (info.version in openapi.json)'
+  note: >-
+    Two generations of the same free API coexist: the /developers reference
+    documents mostly /api/public/*, while the self-describing manifest lists
+    /api/v1/public/*. Neither is marked deprecated. This is the clearest
+    convention defect on the surface.
+
+field_naming:
+  divergent: true
+  unversioned: 'camelCase — generatedAt, winRatePct, profitFactorNet, netBps'
+  versioned: 'snake_case — generated_at, win_rate_pct, profit_factor_net, avg_net_bps'
+  success_flag: '/api/v1/public/* wraps responses with `ok: true`; /api/public/* does not emit `ok` at all'
+  evidence:
+    - {url: 'https://bykaranteli.com/api/public/recent?hours=24&limit=3', status: 200, observed: camelCase, ok_field: absent}
+    - {url: 'https://bykaranteli.com/api/v1/public/leaderboard?window=90&top=3', status: 200, observed: snake_case, ok_field: present}
+  impact: >-
+    A client written against the documented /api/public/* shapes will not
+    deserialize a /api/v1/public/* response. Same host, same data, two
+    serialization conventions and two envelope conventions, with no migration
+    note anywhere.
+
+error_envelope:
+  documented: '{ ok: false, error: "<code>", message?: "<human>" } with an appropriate HTTP status'
+  observed: '{"error":"not_found","message":"No signal found for this id or hash."} on GET /api/public/signals/notarealid -> 404'
+  discrepancy: >-
+    The observed 404 body omits the documented `ok: false` discriminator. A
+    client that branches on `ok` would treat this error as neither success nor
+    failure.
+  rfc9457: false
+  content_type: application/json
+  detail: errors/bykaranteli-problem-types.yml
+
+request_tracing:
+  request_id_header: none
+  note: 'No X-Request-Id / correlation header is returned. Cloudflare cf-ray is the only per-request identifier, and it is infrastructure, not API contract.'
+
+payment_semantics:
+  protocol: x402 v2
+  challenge: 'HTTP 402 with a base64 `payment-required` header carrying resource, accepts[] and a `bazaar` extension JSON Schema'
+  billing_unit: per successful response
+  failure: 'a failed response settles nothing'
+  assets: USDC on Solana mainnet or Base mainnet
+  detail: finops/bykaranteli-finops.yml
+
+restricted_routes:
+  paths:
+    - '/dashboard/*'
+    - '/api/admin/*'
+    - '/api/terminal/*'
+  note: 'Documented as blocked and monitored; clients are told to stay on /api/public/*.'
+
+attribution:
+  required: false
+  requested: 'a visible link back to bykaranteli.com or the source page when embedding'
+  commercial_use: allowed
+  prohibited: 'rebranding ByKaranteli numbers as your own in-house backtest'
+  citation_form: 'ByKaranteli (bykaranteli.com), including the page''s displayed UTC timestamp'

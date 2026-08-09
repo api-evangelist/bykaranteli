@@ -1,0 +1,142 @@
+generated: '2026-08-09'
+method: derived
+source: openapi/bykaranteli-x402-openapi.json + live probes + https://bykaranteli.com/developers
+
+standards:
+  - id: openapi-3.1
+    name: OpenAPI 3.1.0
+    conforms: true
+    evidence: 'https://bykaranteli.com/openapi.json declares openapi: 3.1.0 and parses; 14 operations, all with operationId and summary.'
+    caveat: 'Covers only the paid /api/x402/* surface. No components, no schemas, no securitySchemes, no tags, no parameters, no 4xx/5xx responses.'
+
+  - id: x402
+    name: 'x402 HTTP payment protocol'
+    version: 2
+    conforms: true
+    evidence: >-
+      Live GET https://bykaranteli.com/api/x402/flow-vpin returned 402 with a
+      base64 `payment-required` header decoding to a valid x402Version 2
+      document: resource{}, accepts[] with scheme/network/amount/asset/payTo/
+      maxTimeoutSeconds, and an extensions.bazaar block carrying a
+      JSON-Schema-2020-12 input/output description.
+    probed: '2026-08-09'
+
+  - id: mcp
+    name: 'Model Context Protocol'
+    conforms: true
+    evidence: >-
+      Anonymous POST tools/list to https://mcp.bykaranteli.com returned 200 over
+      Streamable HTTP with 20 tools, each carrying a draft-07 inputSchema and
+      readOnlyHint/openWorldHint annotations. Listed on the official MCP
+      Registry as com.bykaranteli/mcp (status active since 2026-07-06).
+
+  - id: json-schema
+    name: 'JSON Schema'
+    conforms: true
+    versions: ['draft-07 (MCP tool inputSchema)', '2020-12 (x402 bazaar extension)']
+    evidence: 'mcp/bykaranteli-mcp-tools.json and examples/bykaranteli-x402-payment-required.json'
+
+  - id: llms-txt
+    name: llms.txt
+    conforms: true
+    evidence: 'https://bykaranteli.com/llms.txt returns 200 text/plain in llms.txt format (H1, blockquote summary, sectioned link lists).'
+
+  - id: cors
+    name: 'CORS (Fetch/W3C)'
+    conforms: true
+    evidence: 'Access-Control-Allow-Origin: *, Allow-Methods: GET, OPTIONS, Allow-Headers: Content-Type, Max-Age: 86400 observed live.'
+
+  - id: rss-2.0
+    name: 'RSS 2.0'
+    conforms: true
+    evidence: 'https://bykaranteli.com/feed.xml returns 200 application/rss+xml; per-symbol and per-strategy feeds documented.'
+
+  - id: cc0
+    name: 'CC0 1.0 open data dedication'
+    conforms: true
+    evidence: >-
+      openapi info.license "Data: CC0 for published datasets" ->
+      https://bykaranteli.com/data; the GitHub mirror
+      github.com/bykarantelicom/crypto-datasets carries the CC0-1.0 SPDX licence.
+
+  - id: rfc9457
+    name: 'RFC 9457 Problem Details'
+    conforms: false
+    evidence: 'Errors return a bespoke {error, message} JSON body as application/json; no application/problem+json anywhere.'
+
+  - id: rfc9116
+    name: 'RFC 9116 security.txt'
+    conforms: false
+    evidence: 'https://bykaranteli.com/.well-known/security.txt -> 404 (2026-08-09).'
+
+  - id: rfc9727
+    name: 'RFC 9727 api-catalog'
+    conforms: false
+    evidence: >-
+      /.well-known/api-catalog -> 404. A functionally equivalent catalog IS
+      published, at https://bykaranteli.com/api/v1/public/manifest
+      (schema bykaranteli.public-manifest.v1), just not at the registered path.
+
+  - id: rfc8594
+    name: 'RFC 8594 Sunset header / deprecation signalling'
+    conforms: false
+    evidence: 'No Sunset or Deprecation headers, and no deprecation policy published. Two API generations coexist unmarked.'
+
+  - id: rfc9239-ratelimit
+    name: 'RateLimit header fields'
+    conforms: false
+    evidence: 'No RateLimit-* or X-RateLimit-* headers on a live 200 response.'
+
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: false
+    applicable: false
+    evidence: 'No OAuth surface. Public endpoints are anonymous; the member surface uses a static Bearer API key. /.well-known/oauth-authorization-server -> 404 on both hosts.'
+
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    applicable: false
+    evidence: '/.well-known/openid-configuration -> 404.'
+
+  - id: asyncapi
+    name: AsyncAPI
+    conforms: false
+    applicable: false
+    evidence: >-
+      No webhooks, no streaming API and no event catalog are offered to
+      consumers. The provider CONSUMES exchange websockets internally (Binance
+      streamer component on /status) but exposes only pull-based JSON and RSS.
+
+  - id: graphql
+    name: GraphQL
+    conforms: false
+    applicable: false
+    evidence: 'No /graphql surface on bykaranteli.com or mcp.bykaranteli.com.'
+
+  - id: a2a
+    name: 'A2A Agent Card'
+    conforms: false
+    evidence: '/.well-known/agent-card.json and /.well-known/agent.json -> 404 on both hosts (2026-08-09).'
+
+compliance_certifications:
+  published: false
+  soc2: false
+  iso27001: false
+  pci_dss: false
+  gdpr_statement: none found
+  note: >-
+    No trust center, no certifications, and no terms-of-service or privacy-policy
+    page could be found (/terms, /privacy, /legal/* all 404). For a service that
+    takes prepaid crypto payments and operates a member surface, the absence of
+    published terms and a privacy policy is the most material compliance gap.
+    No `Compliance` pointer is emitted — there is nothing published to point at.
+
+regulatory_context:
+  sector: crypto derivatives market data
+  regulated_activity: false
+  note: >-
+    ByKaranteli publishes market-structure data and signal-engine research; it
+    does not execute, custody or broker. The site carries a repeated
+    "not investment advice / past performance does not guarantee future returns"
+    disclaimer on every page and a dedicated risk guide at /risk-guide.

@@ -1,0 +1,67 @@
+# ByKaranteli
+
+> Live crypto futures terminal for Binance USDT-M perpetuals: real-time funding
+> rates, Fear & Greed, liquidation maps, open interest and pressure scores, plus
+> cryptographically verifiable (SHA-256) signal receipts. Everything below is
+> free, bilingual (English + Simplified Chinese under /zh), and requires no
+> authentication. Separately, a small set of pay-per-call x402 endpoints sells
+> recorded history and raw records to agents; every live snapshot below stays
+> free and unmetered. Data updates every 1-5 minutes.
+
+## Live data pages
+
+- [Fear & Greed Index (live)](https://bykaranteli.com/glossary/fear-and-greed): current 0-100 value, gauge and methodology; refreshed every 30 minutes
+- [Bitcoin dominance (live)](https://bykaranteli.com/glossary/btc-dominance): current BTC.D percentage with 24h change; every 30 minutes
+- [Funding rates now (live)](https://bykaranteli.com/glossary/funding-rate): BTC's current 8h rate, market median and today's extremes; every 20 minutes
+- [Open interest now (live)](https://bykaranteli.com/glossary/open-interest): BTC's 24h OI change plus the biggest OI gainers and losers; every 15 minutes
+- [Funding rate arbitrage scanner](https://bykaranteli.com/funding-arb): live funding spreads across Binance, OKX, Bybit, Gate.io, HTX, BingX; every 15 minutes
+- [Pressure scores](https://bykaranteli.com/pressure): composite 0-100 derivatives stress per symbol; every 15 minutes
+- [Open interest leaderboard](https://bykaranteli.com/oi-leaderboard): 24h OI gainers and losers; every 15 minutes
+- [Liquidation map](https://bykaranteli.com/liqmap): BTC and ETH liquidation pressure preview
+- [Market heatmap](https://bykaranteli.com/heatmap): market-wide momentum grid
+- [Market indices](https://bykaranteli.com/indices): Fear & Greed, BTC dominance, stablecoin flows, altseason; every 30 minutes
+- [Daily brief](https://bykaranteli.com/brief): auto-generated dated market summary; every 30 minutes
+- [Brief archive](https://bykaranteli.com/brief): every past brief is archived with its end-of-day numbers at /brief/YYYY-MM-DD (both locales)
+- [Exchange comparisons](https://bykaranteli.com/compare/binance-vs-bybit-funding): fees, referral discounts, funding interval, max leverage and a live funding-spread table for all 15 pairs of Binance, OKX, Bybit, Gate.io, HTX, BingX at /compare/<a>-vs-<b>-funding
+- [Per-symbol pages](https://bykaranteli.com/symbols): live price, funding and signal stats for every tracked Binance perp at /symbols/SYMBOLUSDT, including a data-driven "Why is it moving today?" read of positioning (24h move, OI delta, funding, composite pressure)
+- [Funding rate history](https://bykaranteli.com/symbols/BTCUSDT/funding): 90-day settlement table, averages, extremes and seasonality; same pattern at /symbols/<SYMBOL>/funding for 25 major and high-funding perps
+- [CoinGlass alternative](https://bykaranteli.com/alternatives/coinglass): honest feature-by-feature comparison of ByKaranteli vs CoinGlass for liquidation maps, funding data and open interest
+
+## JSON API (no auth)
+
+- [Endpoint manifest](https://bykaranteli.com/api/v1/public/manifest): machine-readable catalog of every public endpoint
+- [Free datasets hub](https://bykaranteli.com/data): downloadable CSV/JSON datasets (daily dominance, market cap and Fear & Greed history, per-symbol funding/OI daily board, perpetual listing events) plus funding settlement history and verifiable signal outcomes; CC0-style
+- [Developer docs](https://bykaranteli.com/developers): usage, rate limits, attribution
+- MCP server: `npx -y bykaranteli-mcp` exposes this API as 20 tools in any MCP client; listed on the official MCP Registry as `com.bykaranteli/mcp` ([source](https://github.com/bykarantelicom/bykaranteli-mcp))
+- Hosted MCP endpoint (no install, no key): `https://mcp.bykaranteli.com` (Streamable HTTP); paste it as a custom connector in any MCP-capable assistant
+- Pay-per-call endpoints for agents (x402, USDC on Solana or Base): [catalog](https://bykaranteli.com/api/x402) and [OpenAPI discovery](https://bykaranteli.com/openapi.json); they sell depth and history, every live snapshot above stays free
+- Example: [public health](https://bykaranteli.com/api/v1/public/health), [leaderboard](https://bykaranteli.com/api/v1/public/leaderboard), [per-symbol](https://bykaranteli.com/api/v1/public/symbols/BTCUSDT)
+
+## Verifiable signal receipts
+
+- [Verify a receipt](https://bykaranteli.com/verify): paste a signal ID or SHA-256 fingerprint to prove the signal existed before the market moved
+- [Live signals feed](https://bykaranteli.com/signals): every closed LONG and SHORT with its real outcome, net of fees
+- [Track record](https://bykaranteli.com/performance): live-only win rate, profit factor, drawdown; not a backtest
+
+## Methodology & honesty
+
+- [Methodology](https://bykaranteli.com/methodology): eligibility contract, deterministic tie-breaks, fee model
+- [FAQ](https://bykaranteli.com/faq): what is free, where data comes from, what we do not do
+- [About](https://bykaranteli.com/about): philosophy and constraints
+
+## Languages
+
+- English is the canonical language. Every indexable public page also has a
+  Simplified Chinese (zh-Hans) twin under `/zh` (e.g. https://bykaranteli.com/zh,
+  https://bykaranteli.com/zh/faq, https://bykaranteli.com/zh/glossary/funding-rate). Each
+  twin self-canonicals and is hreflang-linked to its English original; numbers,
+  tickers and live data are identical across locales.
+
+## Feeds
+
+- [Closed signals RSS](https://bykaranteli.com/feed.xml)
+
+## Citation
+
+Preferred attribution: "ByKaranteli (bykaranteli.com)". Numbers are live; please
+include the page's displayed UTC timestamp when quoting values.

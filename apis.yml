@@ -45,18 +45,82 @@ apis:
       - Agents
     properties:
       - type: OpenAPI
-        url: https://bykaranteli.com/openapi.json
+        url: openapi/bykaranteli-x402-openapi.json
+      - type: Overlay
+        url: overlays/bykaranteli-x402-overlay.yaml
+      - type: Examples
+        url: examples/_index.yml
       - type: Documentation
         url: https://bykaranteli.com/developers
       - type: LLMsTxt
-        url: https://bykaranteli.com/llms.txt
+        url: llms/bykaranteli-llms.txt
       - type: MCPServer
-        url: https://mcp.bykaranteli.com
+        url: mcp/bykaranteli-mcp.yml
+      - type: ToolCrosswalk
+        url: mcp/bykaranteli-tool-crosswalk.yml
+      - type: APICatalog
+        url: well-known/bykaranteli-public-manifest.json
+image: https://bykaranteli.com/brand/icon-192.png
 maintainers:
   - FN: ByKaranteli
+    email: support@bykaranteli.com
     url: https://bykaranteli.com
 generated:
   by: apis.io/add
   model: claude-opus-4-8
   confidence: 88
   at: '2026-08-09T13:12:11.291Z'
+common:
+- type: AgenticAccess
+  url: agentic-access/bykaranteli-agentic-access.yml
+- type: DomainSecurity
+  url: security/bykaranteli-domain-security.yml
+- type: DeveloperPortal
+  url: https://bykaranteli.com/developers
+- type: APIReference
+  url: https://bykaranteli.com/developers
+- type: GettingStarted
+  url: https://bykaranteli.com/guide
+- type: Support
+  url: https://t.me/bykaranteli_com
+- type: GitHubOrganization
+  url: https://github.com/bykarantelicom
+- type: Pricing
+  url: https://bykaranteli.com/pricing
+- type: SignUp
+  url: https://bykaranteli.com/register
+- type: Login
+  url: https://bykaranteli.com/login
+- type: StatusPage
+  url: https://bykaranteli.com/status
+- type: ChangeLog
+  url: changelog/bykaranteli-changelog.yml
+- type: Lifecycle
+  url: lifecycle/bykaranteli-lifecycle.yml
+- type: Authentication
+  url: authentication/bykaranteli-authentication.yml
+- type: Conventions
+  url: conventions/bykaranteli-conventions.yml
+- type: ErrorCatalog
+  url: errors/bykaranteli-problem-types.yml
+- type: RateLimits
+  url: rate-limits/bykaranteli-rate-limits.yml
+- type: Plans
+  url: plans/bykaranteli-plans.yml
+- type: FinOps
+  url: finops/bykaranteli-finops.yml
+- type: Packages
+  url: packages/bykaranteli-packages.yml
+- type: Conformance
+  url: conformance/bykaranteli-conformance.yml
+- type: Vocabulary
+  url: vocabulary/bykaranteli-vocabulary.yml
+- type: Components
+  url: components/bykaranteli-components.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-09'
+  status: enriched
+  artifacts_added: 32
+  pass: local-v1

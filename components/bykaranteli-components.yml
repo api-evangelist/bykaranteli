@@ -1,0 +1,48 @@
+generated: '2026-08-09'
+method: searched
+source: https://bykaranteli.com/developers
+fetched: '2026-08-09'
+
+summary: >-
+  ByKaranteli ships no component library and no loader script. What it does ship
+  is two documented embed paths — a hosted iframe widget and a copy-paste
+  fetch() snippet — both aimed at putting live numbers on someone else's page.
+
+families:
+  - name: Hosted embed widget
+    kind: iframe
+    loader: none
+    components:
+      - id: pressure
+        url_pattern: https://bykaranteli.com/embed/pressure/[symbol]
+        example: https://bykaranteli.com/embed/pressure/BTCUSDT
+        http_status: 200
+        content_type: text/html
+        renders: 'current composite 0-100 derivatives pressure score for one symbol'
+        theme: dark
+        tracking: 'none (stated)'
+        recommended_size: {width: 340, height: 200}
+        snippet: '<iframe src="https://bykaranteli.com/embed/pressure/BTCUSDT" width="340" height="200" style="border:0"></iframe>'
+    note: '/embed/pressure/[symbol] is the only embed route documented. No other /embed/* surface is advertised.'
+
+  - name: Self-hosted data snippet
+    kind: 'documented JS example'
+    loader: none
+    components:
+      - id: performance-badge
+        source_endpoint: https://bykaranteli.com/api/public/performance
+        renders: '90-day net %, profit factor and trade count with a source link'
+        refresh: 'client-side every 5 minutes'
+        note: >-
+          Published as a copy-paste <script> block on /developers, not as a
+          distributed package. It calls the public API directly — there is
+          nothing to install and nothing versioned.
+
+not_present:
+  - 'no web-component / custom-element library'
+  - 'no React/Vue/Svelte component package (no such package on npm — see packages/)'
+  - 'no hosted checkout, onboarding or dashboard-embedding surface'
+  - 'no design tokens or theming API for the iframe'
+
+related:
+  - 'Chart/terminal UI is first-party only, at /pressure, /liqmap, /heatmap etc. — rendered, not embeddable beyond the pressure widget.'

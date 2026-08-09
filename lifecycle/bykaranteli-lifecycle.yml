@@ -1,0 +1,87 @@
+generated: '2026-08-09'
+method: searched
+source: https://bykaranteli.com/status
+also_searched:
+  - https://bykaranteli.com/incidents
+  - https://bykaranteli.com/changelog
+  - https://bykaranteli.com/methodology
+  - https://bykaranteli.com/developers
+
+versioning:
+  scheme: 'URL path prefix (partially adopted)'
+  current: v1
+  spec_version: '1.0.0'
+  surfaces:
+    - {prefix: /api/v1/public/, versioned: true, note: 'listed in the self-describing manifest'}
+    - {prefix: /api/public/, versioned: false, note: 'documented across the /developers reference; unversioned legacy generation, not marked deprecated'}
+    - {prefix: /api/x402/, versioned: false, note: 'paid surface; the x402 protocol version (2) is carried in the payment challenge, not the path'}
+  breaking_change_policy: none published
+
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No deprecation policy, no Sunset/Deprecation headers, and no notice on the
+    unversioned /api/public/* generation that /api/v1/public/* appears to
+    supersede. A consumer on /api/public/* has no signal that a newer surface
+    exists. This is the highest-value lifecycle gap for the provider.
+
+status_page:
+  url: https://bykaranteli.com/status
+  status: 200
+  type: first-party
+  live: true
+  refresh: 'SSR revalidate every 60s'
+  reports:
+    - 'overall state (observed: All Systems Operational)'
+    - 'DB latency from a live SELECT 1 measured each render'
+    - 'open incidents, 24h incidents, 30d incidents'
+    - 'per-component health: Signal Database, Worker, Streamer (Binance WS), Scanner, Terminal Eval, Autopilot, Latest Closed Signal'
+  methodology: >-
+    Heartbeats come from an internal worker_state table; a component is degraded
+    when its last update is older than the healthy ceiling and offline when
+    older than the degraded ceiling.
+  observed:
+    fetched: '2026-08-09'
+    generated_at: '2026-08-09 20:53:01 UTC'
+    state: All Systems Operational
+    open_incidents: 0
+    incidents_30d: 1
+  note: >-
+    Notably this is a status page about the DATA PLANE and signal engine, not
+    about the HTTP API. There is no API uptime/latency series and no historical
+    availability chart.
+
+incident_log:
+  url: https://bykaranteli.com/incidents
+  status: 200
+  public: true
+  description: 'Transparency log of platform incidents; the status page reads its open-incident count from it.'
+
+sla:
+  published: false
+  uptime_target: none
+  support_response_target: none
+  note: 'No SLA of any kind — expected for a free, unmetered public API and a $29/month prepaid terminal.'
+
+changelog:
+  url: https://bykaranteli.com/changelog
+  status: 200
+  entries_published: 0
+  detail: changelog/bykaranteli-changelog.yml
+
+support:
+  email: support@bykaranteli.com
+  channel: https://t.me/bykaranteli_com
+  note: 'Contact email comes from openapi info.contact; Telegram is the announced public channel (8 daily posts).'
+
+data_retention:
+  liquidations: 'daily long/short totals; history begins 2026-07-30 and grows daily'
+  etf_flows: '~14 months'
+  dvol: 'back to 2021'
+  vpin: '90-day daily track plus last 500 volume buckets'
+  signals: '170 days of history, 6,440 closed signals (site counters, 2026-08-09)'
+  note: 'Selling points on the x402 tier are explicitly retention-beyond-exchange and normalisation across venues.'

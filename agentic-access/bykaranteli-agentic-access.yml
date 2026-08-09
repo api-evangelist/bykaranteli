@@ -1,0 +1,296 @@
+generated: '2026-08-09'
+method: generated
+source: openapi/bykaranteli-x402-openapi.json
+description: Recommended x-agentic-access execution contracts, classified heuristically from the OpenAPI.
+  A governance starting point for exposing this API to AI agents — review and bind audience per deployment.
+  See research/curity/agentic-governance/.
+summary:
+  operations: 14
+  by_action_class:
+    connected: 14
+  by_consequence:
+    read: 14
+  human_in_the_loop_required: 0
+operations:
+- path: /api/x402
+  method: get
+  operationId: x402Catalog
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/x402/liqmap-levels
+  method: get
+  operationId: liqmap-levels
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.005
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/options-flow
+  method: get
+  operationId: options-flow
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.005
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/flow-vpin
+  method: get
+  operationId: flow-vpin
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.002
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/premium-history
+  method: get
+  operationId: premium-history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.005
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/cot-history
+  method: get
+  operationId: cot-history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.005
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/liquidations-raw
+  method: get
+  operationId: liquidations-raw
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.01
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/oi-history
+  method: get
+  operationId: oi-history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.005
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/funding-history
+  method: get
+  operationId: funding-history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.005
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/options-oi-history
+  method: get
+  operationId: options-oi-history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.005
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/dvol-history
+  method: get
+  operationId: dvol-history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.002
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/slippage-history
+  method: get
+  operationId: slippage-history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.002
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/listings-history
+  method: get
+  operationId: listings-history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.002
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+- path: /api/x402/spot-microstructure
+  method: get
+  operationId: spot-microstructure
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: payment settlement is onchain and self-auditing
+    cost:
+      model: x402-per-call
+      currency: USD
+      amount: 0.01
+      asset: USDC
+      networks:
+      - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+      - eip155:8453
+      billed: per successful response
+    human-in-the-loop: recommended (spend approval)
+x-payment-correction:
+  note: 'The heuristic classifier read all 14 operations as consequence: read, which is true of the DATA
+    but false of the CALL. Thirteen of the fourteen settle a USDC micropayment per successful response,
+    so they are read-with-spend, not free reads. Per-operation cost blocks and a spend-approval recommendation
+    have been added above from the provider''s own /api/x402 catalog and per-operation x-payment-info.
+    Only x402Catalog is genuinely free.'
+  operations_corrected: 13
+  source: https://bykaranteli.com/api/x402
+  detail: finops/bykaranteli-finops.yml
+x-free-surface-note: The free public REST surface (/api/public/*, /api/v1/public/*) and the 20 anonymous
+  MCP tools at https://mcp.bykaranteli.com are genuinely unauthenticated read-only reads with no spend
+  consequence. They are not classified here because they have no OpenAPI to classify from.

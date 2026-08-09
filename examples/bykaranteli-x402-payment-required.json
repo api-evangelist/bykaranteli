@@ -1,0 +1,112 @@
+{
+  "x402Version": 2,
+  "error": "Payment required",
+  "resource": {
+    "url": "https://bykaranteli.com/api/x402/flow-vpin",
+    "description": "Order flow toxicity (VPIN) HISTORY for BTC, ETH and SOL: 90-day daily VPIN track with closes plus the last 500 volume buckets .",
+    "mimeType": "",
+    "serviceName": "ByKaranteli VPIN Flow Toxicity",
+    "tags": [
+      "crypto",
+      "orderflow",
+      "vpin",
+      "data"
+    ]
+  },
+  "accepts": [
+    {
+      "scheme": "exact",
+      "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+      "amount": "2000",
+      "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "payTo": "4JgPtoBWkQyG3QffVJC3bfgk7SCQrz9bx2SAEUTSVqzK",
+      "maxTimeoutSeconds": 300,
+      "extra": {
+        "feePayer": "GVJJ7rdGiXr5xaYbRwRbjfaJL7fmwRygFi1H6aGqDveb"
+      }
+    },
+    {
+      "scheme": "exact",
+      "network": "eip155:8453",
+      "amount": "2000",
+      "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "payTo": "0x0db4c96d8b14f431f3bb8ce1a33f07d2c696a62c",
+      "maxTimeoutSeconds": 300,
+      "extra": {
+        "name": "USD Coin",
+        "version": "2"
+      }
+    }
+  ],
+  "extensions": {
+    "bazaar": {
+      "info": {
+        "input": {
+          "type": "http",
+          "queryParams": {},
+          "method": "GET"
+        },
+        "output": {
+          "type": "json",
+          "example": {
+            "ok": true,
+            "rows": [
+              {
+                "symbol": "BTCUSDT",
+                "vpin": 0.31,
+                "percentile_90d": 62.5
+              }
+            ]
+          }
+        }
+      },
+      "schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "http"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET"
+                ]
+              },
+              "queryParams": {
+                "type": "object",
+                "properties": {}
+              }
+            },
+            "required": [
+              "type",
+              "method"
+            ],
+            "additionalProperties": false
+          },
+          "output": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "example": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        },
+        "required": [
+          "input"
+        ]
+      }
+    }
+  }
+}

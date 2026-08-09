@@ -1,0 +1,128 @@
+generated: '2026-08-09'
+method: derived
+source: mcp/bykaranteli-mcp-tools.json + openapi/bykaranteli-x402-openapi.json + well-known/bykaranteli-public-manifest.json
+
+surfaces:
+  openapi:
+    file: openapi/bykaranteli-x402-openapi.json
+    url: https://bykaranteli.com/openapi.json
+    scope: the 13 paid /api/x402/* endpoints plus the free /api/x402 catalog
+    gated: 'paid operations answer 402 until an x402 USDC payment settles'
+  rest_undeclared:
+    file: well-known/bykaranteli-public-manifest.json
+    url: https://bykaranteli.com/api/v1/public/manifest
+    scope: >-
+      the free public REST surface. Self-describing but NOT covered by the
+      published OpenAPI — the manifest and the /developers reference are the
+      only machine/human contracts for it.
+    gated: false
+  mcp:
+    url: https://mcp.bykaranteli.com
+    tools: 20
+    gated: false
+  graphql: none
+
+summary: >-
+  The three surfaces do not overlap the way they usually do. The OpenAPI covers
+  ONLY the paid x402 endpoints; the MCP server covers ONLY the free public data;
+  the free REST surface has no OpenAPI at all. So almost every crosswalk row is
+  a divergence, not a binding. The one genuine intersection is topical rather
+  than operational: several MCP tools return a live/snapshot view of the same
+  data domain whose HISTORY the matching x402 operation sells.
+
+crosswalk:
+  - tool: get_flow_toxicity
+    category: microstructure
+    rest: [flow-vpin]
+    binding: topical
+    confidence: medium
+    note: 'MCP returns the live VPIN read; x402 flow-vpin sells the 90-day daily track plus last 500 buckets. Different depth, same domain — not the same operation.'
+  - tool: get_options_flow
+    category: options
+    rest: [options-flow]
+    binding: topical
+    confidence: medium
+    note: 'MCP returns the recorded Deribit tape snapshot; x402 options-flow sells daily premium-flow history plus the full big-print list.'
+  - tool: get_coinbase_premium
+    category: spot
+    rest: [premium-history]
+    binding: topical
+    confidence: medium
+    note: 'MCP returns current premium; x402 premium-history sells the daily series with both leg prices.'
+  - tool: get_cot_positioning
+    category: positioning
+    rest: [cot-history]
+    binding: topical
+    confidence: medium
+    note: 'MCP returns the latest COT read; x402 cot-history sells the full weekly CFTC history.'
+  - tool: get_open_interest
+    category: derivatives
+    rest: [oi-history]
+    binding: topical
+    confidence: medium
+    note: 'MCP returns current OI; x402 oi-history sells five-minute OI history normalised across symbols.'
+  - tool: get_funding_heatmap
+    category: funding
+    rest: [funding-history]
+    binding: topical
+    confidence: medium
+    note: 'MCP returns the current top-30 funding table; x402 funding-history sells settled funding per symbol and venue.'
+  - tool: get_slippage
+    category: microstructure
+    rest: [slippage-history]
+    binding: topical
+    confidence: medium
+    note: 'MCP returns the current slippage ladder; x402 slippage-history sells the hourly recorded ladders.'
+  - tool: get_liquidations
+    category: liquidations
+    rest: [liquidations-raw]
+    binding: topical
+    confidence: low
+    note: 'MCP returns daily aggregated long/short totals per symbol and exchange; x402 liquidations-raw sells individual events with millisecond timestamps. Aggregate versus raw — related, not equivalent.'
+  - tool: get_options_snapshot
+    category: options
+    rest: [options-oi-history]
+    binding: topical
+    confidence: low
+    note: 'MCP returns a listed-options snapshot; x402 options-oi-history sells daily OI by strike/expiry with mark IV.'
+
+mcp_only:
+  - {tool: get_market_indices, reason: 'Free public REST at /api/public/indices — real endpoint, but not in any OpenAPI.'}
+  - {tool: get_etf_flows, reason: 'US spot ETF flows: MCP-exposed and page-rendered at /etf; no OpenAPI operation, free or paid.'}
+  - {tool: get_funding_arbitrage, reason: 'Free public REST at /api/public/funding-arb; no OpenAPI operation.'}
+  - {tool: get_pressure_scores, reason: 'Free public REST at /api/public/pressure; no OpenAPI operation.'}
+  - {tool: get_top_movers, reason: 'Free public REST at /api/public/top-movers; no OpenAPI operation.'}
+  - {tool: get_recent_signals, reason: 'Free public REST at /api/public/recent; no OpenAPI operation.'}
+  - {tool: get_symbol_performance, reason: 'Free public REST at /api/v1/public/symbols/[symbol]; no OpenAPI operation.'}
+  - {tool: get_strategy_leaderboard, reason: 'Free public REST at /api/v1/public/leaderboard; no OpenAPI operation.'}
+  - {tool: get_fomc_impact, reason: 'Page-rendered at /events; no documented REST endpoint and no OpenAPI operation.'}
+  - {tool: get_liquidation_cascades, reason: 'Page-rendered cascade forensics; no documented REST endpoint and no OpenAPI operation.'}
+  - {tool: get_psi_charge, reason: 'PsiCharge / stablecoin charge state, page-rendered at /charge; no documented REST endpoint.'}
+
+rest_only:
+  - {operationId: x402Catalog, reason: 'Free machine-readable catalog of the paid endpoints. No MCP tool wraps it; an agent reads it directly.'}
+  - {operationId: dvol-history, reason: 'Daily BTC/ETH implied-volatility index history back to 2021. Paid only — no live MCP equivalent.'}
+  - {operationId: listings-history, reason: 'Perpetual listing/delisting events across six exchanges. Paid only; the free CC0 dataset mirror at /data covers part of it.'}
+  - {operationId: spot-microstructure, reason: 'Minute bars with taker-buy/total quote split. Paid only — no MCP equivalent.'}
+  - {operationId: liqmap-levels, reason: 'Full multi-exchange liquidation map with modeled clusters. Paid only; the free /api/liqmap/public preview is not exposed as an MCP tool either.'}
+
+coverage:
+  mcp_tools: 20
+  openapi_operations: 14
+  bound_topically: 9
+  mcp_only: 11
+  rest_only: 5
+  exact_operation_bindings: 0
+
+notes:
+  - >-
+    NO FABRICATION: every row above maps a tool name/description that live
+    tools/list returned to an operationId that exists in the published OpenAPI.
+    Confidence is deliberately medium/low because no binding is an exact
+    operation match — the provider's own two surfaces are a free-live tier and a
+    paid-history tier of the same data core.
+  - >-
+    The actionable gap for the provider: the FREE REST surface — the one the MCP
+    server actually calls, and the one every /developers example uses — has no
+    OpenAPI. Publishing one would bind 11 of the 11 mcp_only rows to real
+    operationIds.

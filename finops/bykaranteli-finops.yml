@@ -1,0 +1,70 @@
+generated: '2026-08-09'
+method: searched
+source: https://bykaranteli.com/api/x402
+http_status: 200
+fetched: '2026-08-09'
+verbatim: well-known/bykaranteli-x402-catalog.json
+
+model: pay-per-call
+protocol: x402
+protocol_version: 2
+currency: USD
+asset: USDC
+billing_unit: 'per successful response'
+failure_billing: 'a failed response settles nothing'
+account_required: false
+key_required: false
+minimum_spend: 0
+prepayment: false
+invoice: none
+
+settlement:
+  - network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+    chain: Solana mainnet
+    asset_mint: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+    pay_to: 4JgPtoBWkQyG3QffVJC3bfgk7SCQrz9bx2SAEUTSVqzK
+    fee_payer: GVJJ7rdGiXr5xaYbRwRbjfaJL7fmwRygFi1H6aGqDveb
+  - network: 'eip155:8453'
+    chain: Base mainnet
+    asset_contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+    pay_to: '0x0db4c96d8b14f431f3bb8ce1a33f07d2c696a62c'
+network_fees: 'covered by the facilitator'
+max_timeout_seconds: 300
+
+priced_operations:
+  - {operationId: liqmap-levels, path: /api/x402/liqmap-levels, price_usd: 0.005}
+  - {operationId: options-flow, path: /api/x402/options-flow, price_usd: 0.005}
+  - {operationId: flow-vpin, path: /api/x402/flow-vpin, price_usd: 0.002}
+  - {operationId: premium-history, path: /api/x402/premium-history, price_usd: 0.005}
+  - {operationId: cot-history, path: /api/x402/cot-history, price_usd: 0.005}
+  - {operationId: liquidations-raw, path: /api/x402/liquidations-raw, price_usd: 0.010}
+  - {operationId: oi-history, path: /api/x402/oi-history, price_usd: 0.005}
+  - {operationId: funding-history, path: /api/x402/funding-history, price_usd: 0.005}
+  - {operationId: options-oi-history, path: /api/x402/options-oi-history, price_usd: 0.005}
+  - {operationId: dvol-history, path: /api/x402/dvol-history, price_usd: 0.002}
+  - {operationId: slippage-history, path: /api/x402/slippage-history, price_usd: 0.002}
+  - {operationId: listings-history, path: /api/x402/listings-history, price_usd: 0.002}
+  - {operationId: spot-microstructure, path: /api/x402/spot-microstructure, price_usd: 0.010}
+
+free_operations:
+  - {operationId: x402Catalog, path: /api/x402, price_usd: 0, note: 'the catalog itself is free and carries security: [] in the OpenAPI'}
+
+price_range_usd: {min: 0.002, max: 0.010}
+priced_operation_count: 13
+
+machine_readable_pricing:
+  catalog: https://bykaranteli.com/api/x402
+  in_spec: true
+  extension: 'x-payment-info per operation in https://bykaranteli.com/openapi.json — {protocols:[{x402:{}}], price:{mode: fixed, currency: USD, amount}, networks[], asset}'
+  challenge: 'base64 `payment-required` header on the 402, carrying accepts[] plus a bazaar-extension JSON Schema for input and output'
+  note: >-
+    Price is discoverable three ways without a human reading a pricing page — in
+    the catalog, in the OpenAPI operation extension, and in the 402 challenge
+    itself. That is an unusually complete monetization contract for an API this
+    small.
+
+positioning:
+  statement: 'What you pay for is depth and history, never access: every live snapshot stays free and unmetered.'
+  client_stack: '@x402/fetch, @x402/core, @x402/svm — wrapFetchWithPayment(fetch, client)'
+
+subscription_side: plans/bykaranteli-plans.yml

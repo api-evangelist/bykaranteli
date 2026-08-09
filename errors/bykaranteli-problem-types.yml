@@ -1,0 +1,91 @@
+generated: '2026-08-09'
+method: derived
+source: openapi/bykaranteli-x402-openapi.json + well-known/bykaranteli-public-manifest.json
+observed: 'live probes, 2026-08-09'
+
+format: json
+rfc9457: false
+content_type: application/json
+envelope:
+  documented: '{ ok: false, error: "<code>", message?: "<human>" }'
+  observed: '{ "error": "<code>", "message": "<human>" }'
+  discriminator_field: ok
+  code_field: error
+  human_field: message
+  note: >-
+    The manifest documents an `ok: false` discriminator; the 404 actually
+    returned on GET /api/public/signals/notarealid omits it. Treat `error` as
+    the reliable code field.
+
+problem_types:
+  - status: 402
+    code: payment_required
+    title: Payment required
+    source: 'openapi 402 response on all 13 /api/x402/* operations'
+    detail: >-
+      The response carries x402 v2 payment requirements in a base64
+      `payment-required` header: resource URL and description, serviceName,
+      tags, and an accepts[] array of {scheme, network, amount, asset, payTo,
+      maxTimeoutSeconds}, plus a `bazaar` extension whose JSON Schema describes
+      the call's input and output. The body is `{}`.
+    remediation: >-
+      Decode the header, settle the quoted USDC amount on Solana mainnet or Base
+      mainnet within maxTimeoutSeconds (300), and retry with the X-PAYMENT
+      header. Any x402 client (@x402/fetch + @x402/core + @x402/svm) does this
+      automatically.
+    verbatim_example: examples/bykaranteli-x402-payment-required.json
+    evidence:
+      url: https://bykaranteli.com/api/x402/flow-vpin
+      http_status: 402
+      fetched: '2026-08-09'
+
+  - status: 404
+    code: not_found
+    title: Resource not found
+    source: 'observed on the public surface'
+    detail: 'Returned when an identifier does not resolve — e.g. an unknown signal id or hash prefix.'
+    remediation: 'Verify the identifier. /api/public/signals/[id] accepts a UUID or a hex hash prefix.'
+    evidence:
+      url: https://bykaranteli.com/api/public/signals/notarealid
+      http_status: 404
+      body: '{"error":"not_found","message":"No signal found for this id or hash."}'
+      fetched: '2026-08-09'
+
+  - status: 429
+    code: rate_limited
+    title: Too many requests
+    source: 'https://bykaranteli.com/developers — "429 on exceed with retry-after"'
+    detail: >-
+      Documented on the /developers quick-facts panel as the response when the
+      20 req/min/IP budget is exceeded. The manifest states public endpoints
+      have no per-IP limit and that only Bearer-auth /api/v1/me/* and
+      /api/v1/public/me limit at 60 req/min/key — the two documents disagree.
+    remediation: 'Honour Retry-After and back off. See rate-limits/bykaranteli-rate-limits.yml.'
+    header: Retry-After
+    verified: false
+    note: 'Not provoked — deliberately not stress-tested against a live free service.'
+
+unknown_but_implied:
+  - status: 400
+    note: >-
+      Range-bounded query parameters are documented (window 1-365, limit 1-100,
+      hours 1-168 …) but out-of-range values are NOT rejected: a live
+      `?window=99999` was silently clamped to 365 and returned 200. So there is
+      no observed 400 on the public surface, and parameter validation is
+      permissive-by-clamping.
+    evidence:
+      url: 'https://bykaranteli.com/api/v1/public/leaderboard?window=99999'
+      http_status: 200
+      observed: 'window_days: 365 in the response body'
+
+gaps:
+  - >-
+    The published OpenAPI declares only `200` and `402` per operation. No 4xx or
+    5xx responses are described for any endpoint, so a generated client has no
+    error model at all.
+  - >-
+    There is no documented error-code registry. The three codes above are the
+    complete set that could be evidenced; any others are undiscoverable without
+    provoking them.
+  - >-
+    application/problem+json (RFC 9457) is not used anywhere.

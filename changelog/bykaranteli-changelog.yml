@@ -1,0 +1,42 @@
+generated: '2026-08-09'
+method: searched
+source: https://bykaranteli.com/changelog
+http_status: 200
+fetched: '2026-08-09'
+
+scheme: 'dated public update log, curated from an internal ops log'
+url: https://bykaranteli.com/changelog
+title: 'Changelog · Public Updates'
+description: >-
+  "Release notes, methodology adjustments, and transparency announcements from
+  the ByKaranteli ops team. Only reports flagged public land here; the full
+  internal ops log stays on the admin console."
+
+current_version: '1.0.0'
+version_source: 'info.version in https://bykaranteli.com/openapi.json'
+
+entries: []
+entries_published: 0
+state: empty
+verbatim: 'No public updates yet. The log will populate as the ops team publishes changes.'
+
+related_change_surfaces:
+  - url: https://bykaranteli.com/incidents
+    type: incident log
+    status: 200
+    note: 'Public transparency log; 1 incident opened in the last 30 days per /status.'
+  - url: https://bykaranteli.com/dev-activity
+    type: development activity
+    status: 200
+    note: 'A published dev-activity feed — the closest thing to a shipped-changes record while /changelog stays empty.'
+  - url: https://bykaranteli.com/newsroom
+    type: newsroom
+    status: 200
+  - registry: npm
+    package: bykaranteli-mcp
+    note: '12 versions published between 2026-07-06 and 2026-08-09 — the MCP server has a real release cadence that the site changelog does not reflect.'
+
+gap: >-
+  The changelog page is published and framed, but carries zero entries while the
+  API surface demonstrably changes (two coexisting generations, 12 npm releases
+  in five weeks). An API consumer has no dated record of what changed or when.

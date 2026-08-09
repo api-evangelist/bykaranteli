@@ -1,0 +1,91 @@
+generated: '2026-08-09'
+method: probed
+source: live GET probes, 2026-08-09
+summary: >-
+  No RFC-standard /.well-known/* document is published on either host. Every
+  path below returned 404 with an HTML body (the Next.js not-found page), so
+  none is a soft-200 false positive. ByKaranteli DOES publish machine-readable
+  discovery — just at its own paths, not under /.well-known/.
+
+probes:
+  - host: bykaranteli.com
+    path: /.well-known/security.txt
+    status: 404
+    file: null
+  - host: bykaranteli.com
+    path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - host: bykaranteli.com
+    path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - host: bykaranteli.com
+    path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - host: bykaranteli.com
+    path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - host: bykaranteli.com
+    path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - host: bykaranteli.com
+    path: /.well-known/agent.json
+    status: 404
+    file: null
+  - host: mcp.bykaranteli.com
+    path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - host: mcp.bykaranteli.com
+    path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - host: mcp.bykaranteli.com
+    path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - host: mcp.bykaranteli.com
+    path: /.well-known/agent.json
+    status: 404
+    file: null
+  - host: mcp.bykaranteli.com
+    path: /.well-known/security.txt
+    status: 404
+    file: null
+
+discovery_documents_published_elsewhere:
+  - name: Public endpoint manifest
+    url: https://bykaranteli.com/api/v1/public/manifest
+    status: 200
+    schema: bykaranteli.public-manifest.v1
+    file: well-known/bykaranteli-public-manifest.json
+    description: >-
+      Self-describing index of every free public endpoint with method, auth,
+      description, cache TTL and parameter list, plus RSS feeds and a
+      cross-cutting `conventions` block (cache header, rate limit, auth, error
+      shape). This is functionally an api-catalog; it is simply not served at
+      /.well-known/api-catalog.
+  - name: x402 paid-endpoint catalog
+    url: https://bykaranteli.com/api/x402
+    status: 200
+    file: well-known/bykaranteli-x402-catalog.json
+    description: >-
+      Machine-readable catalog of the 13 pay-per-call endpoints with per-call
+      USD price, settlement networks and payTo addresses.
+  - name: llms.txt
+    url: https://bykaranteli.com/llms.txt
+    status: 200
+    file: llms/bykaranteli-llms.txt
+  - name: OpenAPI 3.1.0
+    url: https://bykaranteli.com/openapi.json
+    status: 200
+    file: openapi/bykaranteli-x402-openapi.json
+
+provider_gap: >-
+  Publishing /.well-known/api-catalog (RFC 9727) pointing at the existing
+  manifest, and a /.well-known/security.txt (RFC 9116), would cost this provider
+  almost nothing — both documents already exist in substance.
