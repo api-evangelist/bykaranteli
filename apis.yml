@@ -23,43 +23,54 @@ tags:
   - x402
   - Agents
 apis:
-  - name: ByKaranteli Public Data API
-    description: >-
-      Read-only, no-key REST/JSON API for crypto derivatives market-structure data: funding rates/arbitrage, open
-      interest pressure, liquidation maps, options, ETF flows, VPIN toxicity, Coinbase premium, COT positioning, market
-      indices, signal performance and leaderboards. CORS-enabled, 20 req/min/IP, JSON and CSV output.
-    humanURL: https://bykaranteli.com/developers
-    baseURL: https://bykaranteli.com/api
-    tags:
-      - Cryptocurrency
-      - Crypto Derivatives
-      - Market Data
-      - Funding Rates
-      - Open Interest
-      - Liquidations
-      - Options
-      - ETF Flows
-      - Financial Data
-      - MCP
-      - x402
-      - Agents
-    properties:
-      - type: OpenAPI
-        url: openapi/bykaranteli-x402-openapi.json
-      - type: Overlay
-        url: overlays/bykaranteli-x402-overlay.yaml
-      - type: Examples
-        url: examples/_index.yml
-      - type: Documentation
-        url: https://bykaranteli.com/developers
-      - type: LLMsTxt
-        url: llms/bykaranteli-llms.txt
-      - type: MCPServer
-        url: mcp/bykaranteli-mcp.yml
-      - type: ToolCrosswalk
-        url: mcp/bykaranteli-tool-crosswalk.yml
-      - type: APICatalog
-        url: well-known/bykaranteli-public-manifest.json
+- aid: bykaranteli:bykaranteli-x402-api
+  name: ByKaranteli X402 API
+  description: >-
+    Per-call priced history and depth endpoints, settled in USDC over the x402 protocol on
+    Solana and Base mainnet through the Coinbase CDP facilitator. 13 priced endpoints plus
+    the free catalog at /api/x402, which is the authoritative price list. Verified
+    2026-08-11: the catalog lists 13 endpoints from $0.002 to $0.010, and a priced endpoint
+    returns HTTP 402. These sell depth and history, never access.
+  humanURL: https://bykaranteli.com/developers
+  baseURL: https://bykaranteli.com
+  tags:
+  - X402
+  properties:
+  - type: OpenAPI
+    url: openapi/bykaranteli-x402-api-openapi.yml
+  # Overlay was registered in commit d00650f and was dropped when refine-openapis
+  # rewrote this file on 2026-08-09, orphaning overlays/bykaranteli-x402-overlay.yaml
+  # on disk. Restored 2026-08-11. It feeds the `overlay_published` governance check.
+  - type: Overlay
+    url: overlays/bykaranteli-x402-overlay.yaml
+  - type: Examples
+    url: examples/_index.yml
+  - type: Documentation
+    url: https://bykaranteli.com/developers
+  - type: LLMsTxt
+    url: llms/bykaranteli-llms.txt
+  - type: ToolCrosswalk
+    url: mcp/bykaranteli-tool-crosswalk.yml
+  - type: APICatalog
+    url: well-known/bykaranteli-public-manifest.json
+- aid: bykaranteli:bykaranteli-public-api
+  name: ByKaranteli Public API
+  description: >-
+    The free, no-key public REST surface — 10 endpoints under /api/v1/public/ described by
+    the provider's own self-describing manifest, plus the /api/public/ index endpoints.
+    Verified 2026-08-11: unauthenticated, HTTP 200, `access-control-allow-origin: *`,
+    5-minute cache. NO OpenAPI is registered for this surface because the provider does not
+    publish one — their openapi.json covers the x402 endpoints only. The manifest below is
+    the machine-readable description that does exist; nothing here is reconstructed.
+  humanURL: https://bykaranteli.com/developers
+  baseURL: https://bykaranteli.com
+  tags:
+  - Market Data
+  properties:
+  - type: Documentation
+    url: https://bykaranteli.com/developers
+  - type: APICatalog
+    url: well-known/bykaranteli-public-manifest.json
 image: https://bykaranteli.com/brand/icon-192.png
 maintainers:
   - FN: ByKaranteli
@@ -71,6 +82,20 @@ generated:
   confidence: 88
   at: '2026-08-09T13:12:11.291Z'
 common:
+# MCPServer was missing entirely until 2026-08-11, so the rating published
+# "MCP Server 0/12" for a server that is in the official MCP registry. The
+# artifact below was already held — live-introspected 2026-08-09, all 20 tools
+# saved verbatim to mcp/bykaranteli-mcp-tools.json — it was simply never
+# registered here, and the scorer reads `common[]` only. Re-verified 2026-08-11:
+# POST https://mcp.bykaranteli.com initialize -> 200, serverInfo bykaranteli
+# v0.7.3; tools/list -> 20 tools, no credential sent.
+- type: MCPServer
+  url: mcp/bykaranteli-mcp.yml
+# Documentation was registered on the API's `properties[]` only. `has_type` reads
+# `common[]` and nothing else, so a documentation portal that returns 200 was
+# scoring zero. Verified 2026-08-11: HTTP 200.
+- type: Documentation
+  url: https://bykaranteli.com/developers
 - type: AgenticAccess
   url: agentic-access/bykaranteli-agentic-access.yml
 - type: DomainSecurity
@@ -124,3 +149,59 @@ x-enrichment:
   status: enriched
   artifacts_added: 32
   pass: local-v1
+x-evidence:
+  verified: '2026-08-11'
+  request: https://github.com/api-search/inbox/issues/5
+  note: >-
+    Every claim in the provider's request was fetched and verified. The OpenAPI we hold in
+    openapi/_original/ is BYTE-IDENTICAL to the live document (same MD5), and the refined
+    per-tag split has 14/14 path overlap — harvested, not reconstructed.
+  fetched:
+  - url: https://bykaranteli.com/openapi.json
+    status: 200
+    note: openapi 3.1.0, 14 paths / 14 ops, byte-identical to openapi/_original/
+  - url: https://mcp.bykaranteli.com
+    status: 200
+    note: 'POST initialize + tools/list: 20 tools, unauthenticated, serverInfo v0.7.3'
+  - url: https://bykaranteli.com/llms.txt
+    status: 200
+    note: re-harvested 2026-08-11, 9118B (was 5694B at first harvest)
+  - url: https://bykaranteli.com/api/v1/public/manifest
+    status: 200
+    note: 10 free endpoints, endpoint set identical to the held copy
+  - url: https://bykaranteli.com/api/x402
+    status: 200
+    note: 13 priced endpoints, $0.002-$0.010, Solana + Base
+  - url: https://bykaranteli.com/api/x402/funding-history
+    status: 402
+    note: priced endpoint genuinely gates — a real x402 paywall, not a claim
+  - url: https://bykaranteli.com/api/public/indices
+    status: 200
+    note: unauthenticated, access-control-allow-origin *
+  - url: https://registry.npmjs.org/bykaranteli-mcp
+    status: 200
+    note: latest 0.7.3, MIT, matches the running server
+  - url: https://github.com/bykarantelicom/crypto-datasets
+    status: 200
+    note: SPDX CC0-1.0 — the CC0 claim is real
+  - url: https://bykaranteli.com/.well-known/apis.json
+    status: 404
+    note: genuine 404 (Next.js not-found), NOT a soft-404. Provider self-reported this.
+  - url: https://bykaranteli.com/.well-known/api-onboarding
+    status: 404
+    note: genuine 404. Provider self-reported it and declined credit for it.
+  root_cause: >-
+    The MCPServer registration was NOT missing from the original profile. Commit d00650f
+    registered it, along with an Overlay pointer. refine-openapis rewrote apis.yml on
+    2026-08-09 at 20:31 — renaming the API, adding the aid, repointing OpenAPI at the
+    refined per-tag split — and dropped both `MCPServer` and `Overlay` from properties[]
+    in the process, orphaning overlays/bykaranteli-x402-overlay.yaml on disk. Both are
+    restored here, and MCPServer is promoted to common[] where the scorer actually reads
+    it. See the roadmap issue on refine-openapis property loss.
+  not_credited: >-
+    APICatalog stays on the API `properties[]` and is deliberately NOT promoted to
+    `common[]`. The agent-readiness `well_known_catalog` dimension reads APICatalog from
+    `common[]` and is defined as an RFC 9727 /.well-known/api-catalog linkset. ByKaranteli
+    publishes a self-describing manifest at its own path, which is not that, and
+    /.well-known/api-catalog returns a verified 404. Promoting it would manufacture credit
+    the provider has not earned. well_known_catalog correctly stays false.

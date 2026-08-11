@@ -1,12 +1,14 @@
 # ByKaranteli
 
-> Live crypto futures terminal for Binance USDT-M perpetuals: real-time funding
-> rates, Fear & Greed, liquidation maps, open interest and pressure scores, plus
-> cryptographically verifiable (SHA-256) signal receipts. Everything below is
+> Live crypto derivatives data terminal: a six-venue liquidation model with real
+> liquidation prints from three exchange feeds, funding rates, open interest,
+> options gamma and DVOL, US spot ETF flows, CFTC positioning, order flow
+> toxicity, execution slippage, measured FOMC impact and liquidation cascades,
+> plus cryptographically verifiable (SHA-256) signal receipts. Everything below is
 > free, bilingual (English + Simplified Chinese under /zh), and requires no
 > authentication. Separately, a small set of pay-per-call x402 endpoints sells
 > recorded history and raw records to agents; every live snapshot below stays
-> free and unmetered. Data updates every 1-5 minutes.
+> free and unmetered. Refresh cadence is per product and stated on each line below.
 
 ## Live data pages
 
@@ -17,8 +19,20 @@
 - [Funding rate arbitrage scanner](https://bykaranteli.com/funding-arb): live funding spreads across Binance, OKX, Bybit, Gate.io, HTX, BingX; every 15 minutes
 - [Pressure scores](https://bykaranteli.com/pressure): composite 0-100 derivatives stress per symbol; every 15 minutes
 - [Open interest leaderboard](https://bykaranteli.com/oi-leaderboard): 24h OI gainers and losers; every 15 minutes
-- [Liquidation map](https://bykaranteli.com/liqmap): BTC and ETH liquidation pressure preview
-- [Market heatmap](https://bykaranteli.com/heatmap): market-wide momentum grid
+- [Liquidation heatmap](https://bykaranteli.com/liqmap): liquidation clusters by price level for 20 major perps, a six-venue model with real liquidation prints from Binance, Bybit and OKX overlaid; per-coin pages at /liqmap/<coin>
+- [Liquidations today](https://bykaranteli.com/liquidations): real liquidation events from three exchange websocket feeds, plus a permanent daily rollup
+- [Liquidation cascades](https://bykaranteli.com/incidents): auto-detected cascade events, each with how much liquidated, which side, which coins and what price did
+- [Funding rate heatmap](https://bykaranteli.com/heatmap): funding rate per symbol, colour-coded, for the most traded Binance USDT-M perps; every 20 minutes
+- [Options market](https://bykaranteli.com/options): Deribit gamma exposure, DVOL implied volatility (history to 2021) and expiry structure; every hour
+- [Options flow](https://bykaranteli.com/options-flow): options tape recorded every 15 minutes
+- [Order flow toxicity](https://bykaranteli.com/flow): VPIN computed from taker prints, 120 days of history
+- [Coinbase premium](https://bykaranteli.com/premium): Coinbase vs Binance spot premium and cash-and-carry basis, daily history back to 2017
+- [CFTC positioning](https://bykaranteli.com/cot): Commitments of Traders for Bitcoin futures, weekly, backfilled to 2018
+- [ETF flows](https://bykaranteli.com/etf): US spot BTC and ETH ETF daily net flows, 306 days of history; per-issuer detail is a separate and much shorter series
+- [Execution slippage](https://bykaranteli.com/slippage): live cost ladder by order size from real order books, recorded hourly
+- [FOMC impact](https://bykaranteli.com/events): every FOMC meeting with the measured crypto move before and after it
+- [PsiCharge](https://bykaranteli.com/charge): proprietary liquidity-state model (superposition, collapse, purge, ground) with a published year-by-year scorecard
+- [Correlations](https://bykaranteli.com/correlations): 30-day rolling correlation matrix across major perps
 - [Market indices](https://bykaranteli.com/indices): Fear & Greed, BTC dominance, stablecoin flows, altseason; every 30 minutes
 - [Daily brief](https://bykaranteli.com/brief): auto-generated dated market summary; every 30 minutes
 - [Brief archive](https://bykaranteli.com/brief): every past brief is archived with its end-of-day numbers at /brief/YYYY-MM-DD (both locales)
@@ -26,6 +40,15 @@
 - [Per-symbol pages](https://bykaranteli.com/symbols): live price, funding and signal stats for every tracked Binance perp at /symbols/SYMBOLUSDT, including a data-driven "Why is it moving today?" read of positioning (24h move, OI delta, funding, composite pressure)
 - [Funding rate history](https://bykaranteli.com/symbols/BTCUSDT/funding): 90-day settlement table, averages, extremes and seasonality; same pattern at /symbols/<SYMBOL>/funding for 25 major and high-funding perps
 - [CoinGlass alternative](https://bykaranteli.com/alternatives/coinglass): honest feature-by-feature comparison of ByKaranteli vs CoinGlass for liquidation maps, funding data and open interest
+
+## Markdown renditions
+
+- Markdown renditions of the main data pages live at https://bykaranteli.com/md/<page>: home, heatmap, indices, pressure, charge, liqmap, liquidations, incidents, options, options-flow, flow, premium, cot, etf, slippage, events, funding-arb, oi-leaderboard, correlations, listings, performance, methodology, developers, data. For example https://bykaranteli.com/md/heatmap and https://bykaranteli.com/md/charge. Tables come through as markdown tables with units in the header. Per-symbol, glossary, compare and dated brief pages are HTML only.
+- These are English only, and they are a second representation of a page that is already indexable as HTML, so they are served noindex. Same-URL Accept negotiation is deliberately NOT offered: the caches in front of this site do not all key on Accept, and one of them was serving markdown to browsers.
+
+## One-fetch full context
+
+- [llms-full.txt](https://bykaranteli.com/llms-full.txt): the current market state (Fear & Greed, dominance, altseason, funding extremes, OI movers, stress ranking) with units and timestamps, plus what every page answers. Fetch this first if you only get one request.
 
 ## JSON API (no auth)
 
@@ -46,6 +69,7 @@
 ## Methodology & honesty
 
 - [Methodology](https://bykaranteli.com/methodology): eligibility contract, deterministic tie-breaks, fee model
+- [Data collection](https://bykaranteli.com/methodology/data): every source behind the terminal, which venues feed which product, estimated versus real liquidation data, refresh cadence, live row counts per series and what we do not collect
 - [FAQ](https://bykaranteli.com/faq): what is free, where data comes from, what we do not do
 - [About](https://bykaranteli.com/about): philosophy and constraints
 
