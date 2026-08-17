@@ -5,7 +5,7 @@ description: >-
   flows, order-flow toxicity (VPIN), Coinbase premium, CFTC COT positioning, and Fear & Greed / BTC-dominance indices,
   plus live signal performance and per-symbol/strategy leaderboards. It also offers a hosted MCP server, x402
   agent-payment endpoints, and CC0 datasets.
-url: https://bykaranteli.apievangelist.com/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/bykaranteli/refs/heads/main/apis.yml
 created: '2026-08-09'
 modified: '2026-08-09'
 specificationVersion: '0.21'
