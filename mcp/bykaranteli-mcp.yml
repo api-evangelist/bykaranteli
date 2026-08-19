@@ -4,20 +4,21 @@ status: published
 source: https://bykaranteli.com/developers
 live_introspection:
   url: https://mcp.bykaranteli.com
-  method: 'POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  method: POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}
   http_status: 200
   content_type: text/event-stream
   fetched: '2026-08-09'
   saved_verbatim: mcp/bykaranteli-mcp-tools.json
-
 server:
   name: bykaranteli
-  transport: http            # Streamable HTTP
+  transport: http
   url: https://mcp.bykaranteli.com
   auth: none
   local_alternative:
     command: npx
-    args: ['-y', 'bykaranteli-mcp']
+    args:
+    - -y
+    - bykaranteli-mcp
     package: bykaranteli-mcp
     registry: npm
     version: 0.7.3
@@ -30,50 +31,126 @@ server:
     status: active
     first_published: '2026-07-06'
   client_setup:
-    claude_code: 'claude mcp add bykaranteli -- npx -y bykaranteli-mcp'
+    claude_code: claude mcp add bykaranteli -- npx -y bykaranteli-mcp
     claude_desktop: '{"mcpServers":{"bykaranteli":{"command":"npx","args":["-y","bykaranteli-mcp"]}}}'
-    claude_web: 'Settings > Connectors > Add custom connector > https://mcp.bykaranteli.com'
-
+    claude_web: Settings > Connectors > Add custom connector > https://mcp.bykaranteli.com
 tool_count: 20
 read_only: true
 annotations_observed:
   readOnlyHint: true
   openWorldHint: true
   taskSupport: forbidden
-
 tools:
-  - {name: get_market_indices, category: indices, inputs: [], description: "Fear & Greed (today and yesterday), Bitcoin dominance percentage, total market cap and the Retail Euphoria composite. Refreshed about every 30 minutes."}
-  - {name: get_liquidations, category: liquidations, inputs: [symbol, days], description: "Daily long/short liquidation totals in USD per symbol and exchange, recorded from ByKaranteli's own Binance, Bybit and OKX socket collectors. History begins 2026-07-30."}
-  - {name: get_etf_flows, category: flows, inputs: [asset, days], description: "US spot BTC/ETH ETF daily net inflow, total net assets, cumulative inflow and value traded. ~14 months of history."}
-  - {name: get_funding_heatmap, category: funding, inputs: [symbol], description: "Per-symbol funding rate, 24h OI change and 24h price change across the top-30 Binance USDT-M perpetuals."}
-  - {name: get_funding_arbitrage, category: funding, inputs: [], description: "Cross-exchange funding spreads and net-of-cost annualized APR across Binance, OKX, Bybit, Gate.io, HTX, BingX."}
-  - {name: get_pressure_scores, category: derivatives, inputs: [symbol, limit], description: "Composite 0-100 derivatives pressure score per symbol from OI deltas, funding and basis, with direction-aware regimes."}
-  - {name: get_top_movers, category: markets, inputs: [], description: "24h top gainers and losers with price, volume and open-interest deltas."}
-  - {name: get_recent_signals, category: signals, inputs: [], description: "Most recent closed LONG/SHORT signals with real outcomes net of fees."}
-  - {name: get_symbol_performance, category: performance, inputs: [symbol, window_days], description: "Per-symbol signal performance: trades, win rate, profit factor, net bps over a lookback window."}
-  - {name: get_strategy_leaderboard, category: performance, inputs: [], description: "Strategy-level ranking by composite score across the evaluation window."}
-  - {name: get_cot_positioning, category: positioning, inputs: [], description: "CFTC Commitments of Traders positioning for crypto futures."}
-  - {name: get_options_snapshot, category: options, inputs: [], description: "Listed options snapshot (Deribit) — open interest, implied volatility context."}
-  - {name: get_coinbase_premium, category: spot, inputs: [], description: "Coinbase versus offshore price spread, the classic read on US spot demand."}
-  - {name: get_flow_toxicity, category: microstructure, inputs: [], description: "VPIN order-flow toxicity for BTC, ETH and SOL."}
-  - {name: get_options_flow, category: options, inputs: [], description: "Recorded Deribit options tape: premium flow and big prints."}
-  - {name: get_slippage, category: microstructure, inputs: [], description: "Recorded execution slippage ladders — what a given order size would cost against the live book."}
-  - {name: get_fomc_impact, category: macro, inputs: [], description: "Crypto price/derivatives reaction around FOMC events."}
-  - {name: get_liquidation_cascades, category: liquidations, inputs: [], description: "Cascade forensics — clustered liquidation events and their sequence."}
-  - {name: get_open_interest, category: derivatives, inputs: [], description: "Open interest levels and changes across tracked perpetuals."}
-  - {name: get_psi_charge, category: indices, inputs: [], description: "PsiCharge / stablecoin charge state indicator."}
-
+- name: get_market_indices
+  category: indices
+  inputs: []
+  description: Fear & Greed (today and yesterday), Bitcoin dominance percentage, total market cap and
+    the Retail Euphoria composite. Refreshed about every 30 minutes.
+- name: get_liquidations
+  category: liquidations
+  inputs:
+  - symbol
+  - days
+  description: Daily long/short liquidation totals in USD per symbol and exchange, recorded from ByKaranteli's
+    own Binance, Bybit and OKX socket collectors. History begins 2026-07-30.
+- name: get_etf_flows
+  category: flows
+  inputs:
+  - asset
+  - days
+  description: US spot BTC/ETH ETF daily net inflow, total net assets, cumulative inflow and value traded.
+    ~14 months of history.
+- name: get_funding_heatmap
+  category: funding
+  inputs:
+  - symbol
+  description: Per-symbol funding rate, 24h OI change and 24h price change across the top-30 Binance USDT-M
+    perpetuals.
+- name: get_funding_arbitrage
+  category: funding
+  inputs: []
+  description: Cross-exchange funding spreads and net-of-cost annualized APR across Binance, OKX, Bybit,
+    Gate.io, HTX, BingX.
+- name: get_pressure_scores
+  category: derivatives
+  inputs:
+  - symbol
+  - limit
+  description: Composite 0-100 derivatives pressure score per symbol from OI deltas, funding and basis,
+    with direction-aware regimes.
+- name: get_top_movers
+  category: markets
+  inputs: []
+  description: 24h top gainers and losers with price, volume and open-interest deltas.
+- name: get_recent_signals
+  category: signals
+  inputs: []
+  description: Most recent closed LONG/SHORT signals with real outcomes net of fees.
+- name: get_symbol_performance
+  category: performance
+  inputs:
+  - symbol
+  - window_days
+  description: 'Per-symbol signal performance: trades, win rate, profit factor, net bps over a lookback
+    window.'
+- name: get_strategy_leaderboard
+  category: performance
+  inputs: []
+  description: Strategy-level ranking by composite score across the evaluation window.
+- name: get_cot_positioning
+  category: positioning
+  inputs: []
+  description: CFTC Commitments of Traders positioning for crypto futures.
+- name: get_options_snapshot
+  category: options
+  inputs: []
+  description: Listed options snapshot (Deribit) — open interest, implied volatility context.
+- name: get_coinbase_premium
+  category: spot
+  inputs: []
+  description: Coinbase versus offshore price spread, the classic read on US spot demand.
+- name: get_flow_toxicity
+  category: microstructure
+  inputs: []
+  description: VPIN order-flow toxicity for BTC, ETH and SOL.
+- name: get_options_flow
+  category: options
+  inputs: []
+  description: 'Recorded Deribit options tape: premium flow and big prints.'
+- name: get_slippage
+  category: microstructure
+  inputs: []
+  description: Recorded execution slippage ladders — what a given order size would cost against the live
+    book.
+- name: get_fomc_impact
+  category: macro
+  inputs: []
+  description: Crypto price/derivatives reaction around FOMC events.
+- name: get_liquidation_cascades
+  category: liquidations
+  inputs: []
+  description: Cascade forensics — clustered liquidation events and their sequence.
+- name: get_open_interest
+  category: derivatives
+  inputs: []
+  description: Open interest levels and changes across tracked perpetuals.
+- name: get_psi_charge
+  category: indices
+  inputs: []
+  description: PsiCharge / stablecoin charge state indicator.
 notes:
-  - >-
-    Input schemas above are the REAL ones returned by an anonymous tools/list —
-    the verbatim JSON-RPC result (with full JSON Schema per tool) is saved at
-    mcp/bykaranteli-mcp-tools.json. Fourteen of the twenty tools take no
-    parameters at all.
-  - >-
-    The /developers page and the npm README both say "20 tools"; live
-    introspection confirms exactly 20. An older apis.io note about the page
-    stale-stating 10 tools no longer applies.
-  - >-
-    The MCP surface reads the FREE public API only. None of the 13 paid
-    /api/x402/* endpoints are exposed as MCP tools — an agent that wants
-    history/depth must pay over x402 directly. See mcp/bykaranteli-tool-crosswalk.yml.
+- Input schemas above are the REAL ones returned by an anonymous tools/list — the verbatim JSON-RPC result
+  (with full JSON Schema per tool) is saved at mcp/bykaranteli-mcp-tools.json. Fourteen of the twenty
+  tools take no parameters at all.
+- The /developers page and the npm README both say "20 tools"; live introspection confirms exactly 20.
+  An older apis.io note about the page stale-stating 10 tools no longer applies.
+- The MCP surface reads the FREE public API only. None of the 13 paid /api/x402/* endpoints are exposed
+  as MCP tools — an agent that wants history/depth must pay over x402 directly. See mcp/bykaranteli-tool-crosswalk.yml.
+deployment:
+  mode: remote
+  endpoint: https://mcp.bykaranteli.com
+  verified: probed
+  probe: live
+  tools: 20
+  checked: '2026-08-12'
+  source: catalog MCP census

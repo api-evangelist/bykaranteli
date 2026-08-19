@@ -1,0 +1,1259 @@
+{
+  "item": [
+    {
+      "id": "819d5608-dc20-4701-94f0-35139e77ea5c",
+      "name": "X402",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d9bb0a62-2f07-44eb-943e-f016484c33d1",
+          "name": "Free machine-readable catalog of the paid endpoints",
+          "request": {
+            "name": "Free machine-readable catalog of the paid endpoints",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "7027cb5b-29aa-450c-90c9-4fc2e0b4fbda",
+              "name": "Catalog of paid endpoints, prices and settlement rails",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0d26609f-5b4f-4f57-912f-2d73d1baf35b",
+          "name": "Full multi-exchange liquidation map snapshot for a Binance USDT-M perp: modeled leverage clusters, real forceOrder levels, top magnets, funding, OI and orderbook context.",
+          "request": {
+            "name": "Full multi-exchange liquidation map snapshot for a Binance USDT-M perp: modeled leverage clusters, real forceOrder levels, top magnets, funding, OI and orderbook context.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "liqmap-levels"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "65aaa362-f3db-4b81-9ce6-9b46158eecb2",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "liqmap-levels"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7a388e8e-ae60-4485-aea9-12df0faf38d8",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "liqmap-levels"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6b3d2daf-26f5-4c0c-923e-ba938340f0ea",
+          "name": "BTC or ETH options tape depth from recorded Deribit flow: daily premium-flow history plus the full big-print list.",
+          "request": {
+            "name": "BTC or ETH options tape depth from recorded Deribit flow: daily premium-flow history plus the full big-print list.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "options-flow"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "841e8a48-7009-48d2-a276-cbb52456a6bb",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "options-flow"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "66e51e90-30c5-441f-9b2e-8395364fb1ee",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "options-flow"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "078f43a9-4e59-431e-817d-31e643d372ee",
+          "name": "Order flow toxicity (VPIN) history for BTC, ETH and SOL: 90-day daily track plus the last 500 volume buckets.",
+          "request": {
+            "name": "Order flow toxicity (VPIN) history for BTC, ETH and SOL: 90-day daily track plus the last 500 volume buckets.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "flow-vpin"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "057cb2b8-faaf-4cf4-a6d7-069d1bbc83f5",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "flow-vpin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ceeab383-cf56-4e87-89da-bd656f9ebbc9",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "flow-vpin"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "94bce887-aa04-4319-bee2-8db518d90eb9",
+          "name": "Daily Coinbase premium history: the Coinbase versus offshore price spread per day, the classic read on United States spot demand, with both leg prices.",
+          "request": {
+            "name": "Daily Coinbase premium history: the Coinbase versus offshore price spread per day, the classic read on United States spot demand, with both leg prices.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "premium-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "168d9f25-b11e-49fd-8088-91da9d4aaf37",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "premium-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ae0f0be5-91fd-49bd-ad1a-0b9d6674bfa7",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "premium-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "98879249-4e6a-44f8-aeaf-3490bfd3064a",
+          "name": "Full CFTC Commitments of Traders weekly history for crypto futures: dealer, asset manager, leveraged fund, other reportable and non reportable long and short positions plus open interest per report.",
+          "request": {
+            "name": "Full CFTC Commitments of Traders weekly history for crypto futures: dealer, asset manager, leveraged fund, other reportable and non reportable long and short positions plus open interest per report.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "cot-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ee7d11f0-fb41-4f59-81b5-ecd303756114",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "cot-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "98ac316d-15bf-4cfc-971f-2bcdcb46d7b8",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "cot-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cb2ead4f-2297-4c73-bbcd-5322e7f295b1",
+          "name": "Individual liquidation events recorded from our own exchange sockets across Binance, Bybit and OKX: side, price, quantity, notional, venue and millisecond timestamp.",
+          "request": {
+            "name": "Individual liquidation events recorded from our own exchange sockets across Binance, Bybit and OKX: side, price, quantity, notional, venue and millisecond timestamp.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "liquidations-raw"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "edd31f98-2c82-4e6f-b0da-43e8f21fb7e7",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "liquidations-raw"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "fc28bfef-88a2-4807-b5d0-dc5dc70fdc0d",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "liquidations-raw"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "69d283fe-f5ec-4992-8d0f-b758d145835b",
+          "name": "Five minute open interest history for the major perpetuals in base units and USD, normalised across symbols and retained on our side, so one query replaces per-symbol paginated pulls against exchange endpoints.",
+          "request": {
+            "name": "Five minute open interest history for the major perpetuals in base units and USD, normalised across symbols and retained on our side, so one query replaces per-symbol paginated pulls against exchange endpoints.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "oi-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c2289761-67f6-42f7-8c07-af4084858a4d",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "oi-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3c7eea49-25ed-4909-880f-74164e569cd3",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "oi-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "03654232-f24e-46df-b20c-3e7d172dadaf",
+          "name": "Settled funding rate history per symbol and venue, the series behind carry and basis work.",
+          "request": {
+            "name": "Settled funding rate history per symbol and venue, the series behind carry and basis work.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "funding-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "55446ac7-f38b-40b8-aac9-27814dedea4e",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "funding-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "73aa1eec-a082-416e-9f4b-14fb3eeca1f6",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "funding-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d37f893c-2eab-4684-83e0-9efd612dc459",
+          "name": "Daily listed options open interest per instrument: strike, expiry, option type, open interest, mark implied volatility, underlying price and traded notional.",
+          "request": {
+            "name": "Daily listed options open interest per instrument: strike, expiry, option type, open interest, mark implied volatility, underlying price and traded notional.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "options-oi-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "81b3aca4-f808-402a-908b-7b39d33edf2d",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "options-oi-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "43e9a14f-ad7e-4019-9a9c-29abef7193f7",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "options-oi-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "53ee92ce-3004-4677-9955-ee16ca8423fb",
+          "name": "Daily implied volatility index history for BTC and ETH going back to 2021, the crypto equivalent of a VIX series.",
+          "request": {
+            "name": "Daily implied volatility index history for BTC and ETH going back to 2021, the crypto equivalent of a VIX series.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "dvol-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "787a9573-2cab-4386-bc5f-96de5df66c39",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "dvol-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "541d0bd7-f5de-4265-bcfa-b67370e58175",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "dvol-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f23d9b96-1b6d-425e-80a1-990537676fa5",
+          "name": "Hourly recorded execution slippage ladders per symbol: what a given order size would actually cost against the live book at that hour.",
+          "request": {
+            "name": "Hourly recorded execution slippage ladders per symbol: what a given order size would actually cost against the live book at that hour.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "slippage-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "16a2aaaf-5188-4a39-b627-7a9a90900fa1",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "slippage-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7d515835-5089-43e6-a4b3-c320ff4dd606",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "slippage-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "46686605-763f-4031-9479-c26533d4afcb",
+          "name": "Perpetual listing and delisting events across six exchanges with first seen, last seen and delisted timestamps per instrument, the record behind listing driven volatility studies.",
+          "request": {
+            "name": "Perpetual listing and delisting events across six exchanges with first seen, last seen and delisted timestamps per instrument, the record behind listing driven volatility studies.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "listings-history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "10603fc2-2307-4699-ad59-2cd6d57b561d",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "listings-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "028386e1-4708-4821-a32c-c358a5692db2",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "listings-history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "138f1bf3-d3e2-4c6d-83ff-117bc4c34e99",
+          "name": "Minute bars with the taker buy versus total quote volume split, pre-joined across venues and kept beyond exchange retention: the raw input behind order flow imbalance and VPIN work, in one query instead of paginating an exchange API per symbol per venue.",
+          "request": {
+            "name": "Minute bars with the taker buy versus total quote volume split, pre-joined across venues and kept beyond exchange retention: the raw input behind order flow imbalance and VPIN work, in one query instead of paginating an exchange API per symbol per venue.",
+            "description": {},
+            "url": {
+              "path": [
+                "api",
+                "x402",
+                "spot-microstructure"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "ff9a4ef3-0bba-46a1-9a8c-6f2e99f45111",
+              "name": "Requested data, returned after payment settles",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "spot-microstructure"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "851705f2-5e51-477a-99c2-48c5d6cbd7f4",
+              "name": "Payment required: the response carries x402 payment requirements",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "x402",
+                    "spot-microstructure"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://bykaranteli.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "be511fc4-0bde-4049-aede-168d9de82815",
+    "name": "ByKaranteli crypto derivatives data X402 API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Crypto derivatives market structure recorded around the clock. The live snapshots are free and unmetered; the endpoints listed here sell depth and history per call over the x402 protocol.\n\nContact Support:\n Email: support@bykaranteli.com",
+      "type": "text/plain"
+    }
+  }
+}

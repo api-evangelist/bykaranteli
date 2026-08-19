@@ -1,0 +1,172 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "ByKaranteli crypto derivatives data X402 API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "X402",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Free machine-readable catalog of the paid endpoints",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402"
+          },
+          "docs": "Free machine-readable catalog of the paid endpoints"
+        },
+        {
+          "info": {
+            "name": "Full multi-exchange liquidation map snapshot for a Binance USDT-M perp: modeled leverage clusters, real forceOrder levels, top magnets, funding, OI and orderbook context.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/liqmap-levels"
+          },
+          "docs": "Full multi-exchange liquidation map snapshot for a Binance USDT-M perp: modeled leverage clusters, real forceOrder levels, top magnets, funding, OI and orderbook context."
+        },
+        {
+          "info": {
+            "name": "BTC or ETH options tape depth from recorded Deribit flow: daily premium-flow history plus the full big-print list.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/options-flow"
+          },
+          "docs": "BTC or ETH options tape depth from recorded Deribit flow: daily premium-flow history plus the full big-print list."
+        },
+        {
+          "info": {
+            "name": "Order flow toxicity (VPIN) history for BTC, ETH and SOL: 90-day daily track plus the last 500 volume buckets.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/flow-vpin"
+          },
+          "docs": "Order flow toxicity (VPIN) history for BTC, ETH and SOL: 90-day daily track plus the last 500 volume buckets."
+        },
+        {
+          "info": {
+            "name": "Daily Coinbase premium history: the Coinbase versus offshore price spread per day, the classic read on United States spot demand, with both leg prices.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/premium-history"
+          },
+          "docs": "Daily Coinbase premium history: the Coinbase versus offshore price spread per day, the classic read on United States spot demand, with both leg prices."
+        },
+        {
+          "info": {
+            "name": "Full CFTC Commitments of Traders weekly history for crypto futures: dealer, asset manager, leveraged fund, other reportable and non reportable long and short positions plus open interest per report.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/cot-history"
+          },
+          "docs": "Full CFTC Commitments of Traders weekly history for crypto futures: dealer, asset manager, leveraged fund, other reportable and non reportable long and short positions plus open interest per report."
+        },
+        {
+          "info": {
+            "name": "Individual liquidation events recorded from our own exchange sockets across Binance, Bybit and OKX: side, price, quantity, notional, venue and millisecond timestamp.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/liquidations-raw"
+          },
+          "docs": "Individual liquidation events recorded from our own exchange sockets across Binance, Bybit and OKX: side, price, quantity, notional, venue and millisecond timestamp."
+        },
+        {
+          "info": {
+            "name": "Five minute open interest history for the major perpetuals in base units and USD, normalised across symbols and retained on our side, so one query replaces per-symbol paginated pulls against exchange endpoints.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/oi-history"
+          },
+          "docs": "Five minute open interest history for the major perpetuals in base units and USD, normalised across symbols and retained on our side, so one query replaces per-symbol paginated pulls against exchange endpoints."
+        },
+        {
+          "info": {
+            "name": "Settled funding rate history per symbol and venue, the series behind carry and basis work.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/funding-history"
+          },
+          "docs": "Settled funding rate history per symbol and venue, the series behind carry and basis work."
+        },
+        {
+          "info": {
+            "name": "Daily listed options open interest per instrument: strike, expiry, option type, open interest, mark implied volatility, underlying price and traded notional.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/options-oi-history"
+          },
+          "docs": "Daily listed options open interest per instrument: strike, expiry, option type, open interest, mark implied volatility, underlying price and traded notional."
+        },
+        {
+          "info": {
+            "name": "Daily implied volatility index history for BTC and ETH going back to 2021, the crypto equivalent of a VIX series.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/dvol-history"
+          },
+          "docs": "Daily implied volatility index history for BTC and ETH going back to 2021, the crypto equivalent of a VIX series."
+        },
+        {
+          "info": {
+            "name": "Hourly recorded execution slippage ladders per symbol: what a given order size would actually cost against the live book at that hour.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/slippage-history"
+          },
+          "docs": "Hourly recorded execution slippage ladders per symbol: what a given order size would actually cost against the live book at that hour."
+        },
+        {
+          "info": {
+            "name": "Perpetual listing and delisting events across six exchanges with first seen, last seen and delisted timestamps per instrument, the record behind listing driven volatility studies.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/listings-history"
+          },
+          "docs": "Perpetual listing and delisting events across six exchanges with first seen, last seen and delisted timestamps per instrument, the record behind listing driven volatility studies."
+        },
+        {
+          "info": {
+            "name": "Minute bars with the taker buy versus total quote volume split, pre-joined across venues and kept beyond exchange retention: the raw input behind order flow imbalance and VPIN work, in one query instead of paginating an exchange API per symbol per venue.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://bykaranteli.com/api/x402/spot-microstructure"
+          },
+          "docs": "Minute bars with the taker buy versus total quote volume split, pre-joined across venues and kept beyond exchange retention: the raw input behind order flow imbalance and VPIN work, in one query instead of paginating an exchange API per symbol per venue."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
