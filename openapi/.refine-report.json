@@ -1,7 +1,7 @@
 {
   "provider": "bykaranteli",
   "sources": [
-    "bykaranteli-x402-api-openapi.yml"
+    "_original/bykaranteli-x402-openapi.json"
   ],
   "outputs": [
     "bykaranteli-x402-api-openapi.yml"
@@ -10,8 +10,26 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "bykaranteli-x402-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "bykaranteli-x402-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402 -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/liqmap-levels -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/options-flow -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/flow-vpin -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/premium-history -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/cot-history -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/liquidations-raw -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/oi-history -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/funding-history -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/options-oi-history -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/dvol-history -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/slippage-history -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/listings-history -> X402",
+    "bykaranteli-x402-openapi.json: tagged paths GET /api/x402/spot-microstructure -> X402",
+    "bykaranteli-x402-openapi.json: declared missing tag: X402",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "bykaranteli-x402-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

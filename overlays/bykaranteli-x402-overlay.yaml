@@ -1,6 +1,6 @@
-generated: '2026-08-09'
-method: generated
-source: openapi/bykaranteli-x402-openapi.json
+x-generated: '2026-08-09'
+x-method: generated
+x-source: openapi/bykaranteli-x402-openapi.json
 
 overlay: 1.0.0
 info:

@@ -27,7 +27,7 @@ paths:
       - X402
   /api/x402/liqmap-levels:
     get:
-      summary: 'Full multi-exchange liquidation map snapshot for a Binance USDT-M perp: modeled leverage clusters, real forceOrder levels, top magnets, funding, OI and orderbook context.'
+      summary: 'Full multi-exchange liquidation map snapshot for a Binance USDT-M perp: modeled…'
       operationId: liqmap-levels
       responses:
         '200':
@@ -49,7 +49,7 @@ paths:
       - X402
   /api/x402/options-flow:
     get:
-      summary: 'BTC or ETH options tape depth from recorded Deribit flow: daily premium-flow history plus the full big-print list.'
+      summary: 'BTC or ETH options tape depth from recorded Deribit flow: daily premium-flow…'
       operationId: options-flow
       responses:
         '200':
@@ -71,7 +71,7 @@ paths:
       - X402
   /api/x402/flow-vpin:
     get:
-      summary: 'Order flow toxicity (VPIN) history for BTC, ETH and SOL: 90-day daily track plus the last 500 volume buckets.'
+      summary: 'Order flow toxicity (VPIN) history for BTC, ETH and SOL: 90-day daily track…'
       operationId: flow-vpin
       responses:
         '200':
@@ -93,7 +93,7 @@ paths:
       - X402
   /api/x402/premium-history:
     get:
-      summary: 'Daily Coinbase premium history: the Coinbase versus offshore price spread per day, the classic read on United States spot demand, with both leg prices.'
+      summary: 'Daily Coinbase premium history: the Coinbase versus offshore price spread per…'
       operationId: premium-history
       responses:
         '200':
@@ -115,7 +115,7 @@ paths:
       - X402
   /api/x402/cot-history:
     get:
-      summary: 'Full CFTC Commitments of Traders weekly history for crypto futures: dealer, asset manager, leveraged fund, other reportable and non reportable long and short positions plus open interest per report.'
+      summary: 'Full CFTC Commitments of Traders weekly history for crypto futures: dealer…'
       operationId: cot-history
       responses:
         '200':
@@ -137,7 +137,7 @@ paths:
       - X402
   /api/x402/liquidations-raw:
     get:
-      summary: 'Individual liquidation events recorded from our own exchange sockets across Binance, Bybit and OKX: side, price, quantity, notional, venue and millisecond timestamp.'
+      summary: Individual liquidation events recorded from our own exchange sockets across…
       operationId: liquidations-raw
       responses:
         '200':
@@ -159,7 +159,7 @@ paths:
       - X402
   /api/x402/oi-history:
     get:
-      summary: Five minute open interest history for the major perpetuals in base units and USD, normalised across symbols and retained on our side, so one query replaces per-symbol paginated pulls against exchange endpoints.
+      summary: Five minute open interest history for the major perpetuals in base units and…
       operationId: oi-history
       responses:
         '200':
@@ -181,7 +181,7 @@ paths:
       - X402
   /api/x402/funding-history:
     get:
-      summary: Settled funding rate history per symbol and venue, the series behind carry and basis work.
+      summary: Settled funding rate history per symbol and venue, the series behind carry and…
       operationId: funding-history
       responses:
         '200':
@@ -203,7 +203,7 @@ paths:
       - X402
   /api/x402/options-oi-history:
     get:
-      summary: 'Daily listed options open interest per instrument: strike, expiry, option type, open interest, mark implied volatility, underlying price and traded notional.'
+      summary: 'Daily listed options open interest per instrument: strike, expiry, option type…'
       operationId: options-oi-history
       responses:
         '200':
@@ -225,7 +225,7 @@ paths:
       - X402
   /api/x402/dvol-history:
     get:
-      summary: Daily implied volatility index history for BTC and ETH going back to 2021, the crypto equivalent of a VIX series.
+      summary: Daily implied volatility index history for BTC and ETH going back to 2021, the…
       operationId: dvol-history
       responses:
         '200':
@@ -247,7 +247,7 @@ paths:
       - X402
   /api/x402/slippage-history:
     get:
-      summary: 'Hourly recorded execution slippage ladders per symbol: what a given order size would actually cost against the live book at that hour.'
+      summary: 'Hourly recorded execution slippage ladders per symbol: what a given order size…'
       operationId: slippage-history
       responses:
         '200':
@@ -269,7 +269,7 @@ paths:
       - X402
   /api/x402/listings-history:
     get:
-      summary: Perpetual listing and delisting events across six exchanges with first seen, last seen and delisted timestamps per instrument, the record behind listing driven volatility studies.
+      summary: Perpetual listing and delisting events across six exchanges with first seen…
       operationId: listings-history
       responses:
         '200':
@@ -291,7 +291,7 @@ paths:
       - X402
   /api/x402/spot-microstructure:
     get:
-      summary: 'Minute bars with the taker buy versus total quote volume split, pre-joined across venues and kept beyond exchange retention: the raw input behind order flow imbalance and VPIN work, in one query instead of paginating an exchange API per symbol per venue.'
+      summary: Minute bars with the taker buy versus total quote volume split, pre-joined…
       operationId: spot-microstructure
       responses:
         '200':
