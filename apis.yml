@@ -59,7 +59,6 @@ apis:
     2026-08-11: the catalog lists 13 endpoints from $0.002 to $0.010, and a priced endpoint
     returns HTTP 402. These sell depth and history, never access.
   humanURL: https://bykaranteli.com/developers
-  baseURL: https://bykaranteli.com
   tags:
   - x402
   tags_raw:
@@ -92,7 +91,6 @@ apis:
     publish one — their openapi.json covers the x402 endpoints only. The manifest below is
     the machine-readable description that does exist; nothing here is reconstructed.
   humanURL: https://bykaranteli.com/developers
-  baseURL: https://bykaranteli.com
   tags:
   - Market Data
   properties:
@@ -236,3 +234,10 @@ x-evidence:
     publishes a self-describing manifest at its own path, which is not that, and
     /.well-known/api-catalog returns a verified 404. Promoting it would manufacture credit
     the provider has not earned. well_known_catalog correctly stays false.
+x-x402:
+  verified: true
+  probed: '2026-09-24'
+  url: "https://bykaranteli.com/api/x402/flow-vpin"
+  evidence:
+  - "header:payment-required"
+  control: 404
