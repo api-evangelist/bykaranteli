@@ -1,11 +1,14 @@
 name: ByKaranteli
+
 description: >-
   A crypto-derivatives market-structure data service built on a deterministic crypto-futures signal engine. Its free,
   no-key public REST API surfaces funding rates/arbitrage, open interest, liquidation maps, options (Deribit), ETF
   flows, order-flow toxicity (VPIN), Coinbase premium, CFTC COT positioning, and Fear & Greed / BTC-dominance indices,
   plus live signal performance and per-symbol/strategy leaderboards. It also offers a hosted MCP server, x402
   agent-payment endpoints, and CC0 datasets.
+
 url: https://raw.githubusercontent.com/api-evangelist/bykaranteli/refs/heads/main/apis.yml
+
 deliveryModel:
   model: saas
   open_source: false
@@ -18,6 +21,7 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+
 accessModel:
   pricing: freemium
   onboarding: self-serve
@@ -33,9 +37,13 @@ accessModel:
   - security
   generated: '2026-09-02'
   method: derived
+
 created: '2026-08-09'
+
 modified: '2026-08-09'
+
 specificationVersion: '0.23'
+
 tags:
   - Cryptocurrency
   - Crypto Derivatives
@@ -49,66 +57,37 @@ tags:
   - MCP
   - x402
   - Agents
-apis:
-- aid: bykaranteli:bykaranteli-x402-api
-  name: ByKaranteli X402 API
-  description: >-
-    Per-call priced history and depth endpoints, settled in USDC over the x402 protocol on
-    Solana and Base mainnet through the Coinbase CDP facilitator. 13 priced endpoints plus
-    the free catalog at /api/x402, which is the authoritative price list. Verified
-    2026-08-11: the catalog lists 13 endpoints from $0.002 to $0.010, and a priced endpoint
-    returns HTTP 402. These sell depth and history, never access.
-  humanURL: https://bykaranteli.com/developers
-  tags:
-  - x402
-  tags_raw:
-  - X402
-  properties:
-  - type: OpenAPI
-    url: openapi/bykaranteli-x402-api-openapi.yml
-  # Overlay was registered in commit d00650f and was dropped when refine-openapis
-  # rewrote this file on 2026-08-09, orphaning overlays/bykaranteli-x402-overlay.yaml
-  # on disk. Restored 2026-08-11. It feeds the `overlay_published` governance check.
-  - type: Overlay
-    url: overlays/bykaranteli-x402-overlay.yaml
-  - type: Examples
-    url: examples/_index.yml
-  - type: Documentation
-    url: https://bykaranteli.com/developers
-  - type: LLMsTxt
-    url: llms/bykaranteli-llms.txt
-  - type: ToolCrosswalk
-    url: mcp/bykaranteli-tool-crosswalk.yml
-  - type: APICatalog
-    url: well-known/bykaranteli-public-manifest.json
-- aid: bykaranteli:bykaranteli-public-api
-  name: ByKaranteli Public API
-  description: >-
-    The free, no-key public REST surface — 10 endpoints under /api/v1/public/ described by
-    the provider's own self-describing manifest, plus the /api/public/ index endpoints.
-    Verified 2026-08-11: unauthenticated, HTTP 200, `access-control-allow-origin: *`,
-    5-minute cache. NO OpenAPI is registered for this surface because the provider does not
-    publish one — their openapi.json covers the x402 endpoints only. The manifest below is
-    the machine-readable description that does exist; nothing here is reconstructed.
-  humanURL: https://bykaranteli.com/developers
-  tags:
-  - Market Data
-  properties:
-  - type: Documentation
-    url: https://bykaranteli.com/developers
-  - type: APICatalog
-    url: well-known/bykaranteli-public-manifest.json
+
 image: https://bykaranteli.com/brand/icon-192.png
+
 maintainers:
   - FN: ByKaranteli
     email: support@bykaranteli.com
     url: https://bykaranteli.com
-generated:
-  by: apis.io/add
-  model: claude-opus-4-8
-  confidence: 88
-  at: '2026-08-09T13:12:11.291Z'
+
 common:
+- type: Plans
+  url: plans/bykaranteli-plans-pricing.yml
+- type: Spectral
+  url: rules/bykaranteli-rules.yml
+- type: AgentCard
+  url: a2a/bykaranteli-a2a.yml
+- type: Hosts
+  url: hosts/bykaranteli-hosts.yml
+- type: Vendors
+  url: vendors/bykaranteli-vendors.yml
+- type: SDKs
+  url: packages/bykaranteli-packages.yml
+- type: TermsOfService
+  url: https://bykaranteli.com/terms
+- type: Security
+  url: https://bykaranteli.com/security
+- type: PrivacyPolicy
+  url: https://bykaranteli.com/privacy
+- type: Newsroom
+  url: https://bykaranteli.com/newsroom
+- type: VulnerabilityDisclosure
+  url: security/bykaranteli-vulnerability-disclosure.yml
 - type: Website
   url: https://www.bykaranteli.com/
 # MCPServer was missing entirely until 2026-08-11, so the rating published
@@ -173,11 +152,63 @@ common:
   url: components/bykaranteli-components.yml
 - type: AgentSkill
   url: skills/_index.yml
-x-enrichment:
-  date: '2026-08-09'
-  status: enriched
-  artifacts_added: 32
-  pass: local-v1
+
+apis:
+- aid: bykaranteli:bykaranteli-x402-api
+  name: ByKaranteli X402 API
+  description: >-
+    Per-call priced history and depth endpoints, settled in USDC over the x402 protocol on
+    Solana and Base mainnet through the Coinbase CDP facilitator. 13 priced endpoints plus
+    the free catalog at /api/x402, which is the authoritative price list. Verified
+    2026-08-11: the catalog lists 13 endpoints from $0.002 to $0.010, and a priced endpoint
+    returns HTTP 402. These sell depth and history, never access.
+  humanURL: https://bykaranteli.com/developers
+  tags:
+  - x402
+  tags_raw:
+  - X402
+  properties:
+  - type: OpenAPI
+    url: openapi/bykaranteli-x402-api-openapi.yml
+  # Overlay was registered in commit d00650f and was dropped when refine-openapis
+  # rewrote this file on 2026-08-09, orphaning overlays/bykaranteli-x402-overlay.yaml
+  # on disk. Restored 2026-08-11. It feeds the `overlay_published` governance check.
+  - type: Overlay
+    url: overlays/bykaranteli-x402-overlay.yaml
+  - type: Examples
+    url: examples/_index.yml
+  - type: Documentation
+    url: https://bykaranteli.com/developers
+  - type: LLMsTxt
+    url: llms/bykaranteli-llms.txt
+  - type: ToolCrosswalk
+    url: mcp/bykaranteli-tool-crosswalk.yml
+  - type: APICatalog
+    url: well-known/bykaranteli-public-manifest.json
+- aid: bykaranteli:bykaranteli-public-api
+  name: ByKaranteli Public API
+  description: >-
+    The free, no-key public REST surface — 10 endpoints under /api/v1/public/ described by
+    the provider's own self-describing manifest, plus the /api/public/ index endpoints.
+    Verified 2026-08-11: unauthenticated, HTTP 200, `access-control-allow-origin: *`,
+    5-minute cache. NO OpenAPI is registered for this surface because the provider does not
+    publish one — their openapi.json covers the x402 endpoints only. The manifest below is
+    the machine-readable description that does exist; nothing here is reconstructed.
+  humanURL: https://bykaranteli.com/developers
+  tags:
+  - Market Data
+  properties:
+  - type: Documentation
+    url: https://bykaranteli.com/developers
+  - type: APICatalog
+    url: well-known/bykaranteli-public-manifest.json
+
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 88
+  at: '2026-08-09T13:12:11.291Z'
+
 x-evidence:
   verified: '2026-08-11'
   request: https://github.com/api-search/inbox/issues/5
@@ -234,6 +265,7 @@ x-evidence:
     publishes a self-describing manifest at its own path, which is not that, and
     /.well-known/api-catalog returns a verified 404. Promoting it would manufacture credit
     the provider has not earned. well_known_catalog correctly stays false.
+
 x-x402:
   verified: true
   probed: '2026-09-24'
@@ -241,8 +273,15 @@ x-x402:
   evidence:
   - "header:payment-required"
   control: 404
+
 x-correction-request:
   requested: '2026-10-02'
   source:
   - https://github.com/api-evangelist/bykaranteli/issues/2
   request: 'Issue #2 (bykarantelicom, operator of bykaranteli.com), verified live 2026-10-02. (1) SIGNAL PRODUCT RETIRED: /signals now 308-redirects to /data and /leaderboard to /symbols; llms.txt describes a data platform and calls PsiCharge ''not a trade signal''. Remove ''deterministic crypto-futures signal engine'', ''live signal performance'', ''win rate'', ''TP/SL'' and ''per-symbol/strategy leaderboards'' from description, PROFILE.md and API descriptions (note: /api/public/liquidation-leaderboard is a liquidation-data endpoint, not a signal leaderboard - keep it). (2) NOT KEYLESS: unauthenticated GET /api/public/oi and /api/public/liqmap return 401 code key_required; https://bykaranteli.com/openapi.json (OpenAPI 3.1.0, 105 paths) declares securityScheme accountKey (http bearer, ''bk_...'' key, free with a verified account at /dashboard/api) and states 30 requests a minute on the free plan. Remove ''no-key'', ''free, no-key'', ''20 req/min/IP''. Exception to record accurately: the Proof API (/api/v1/proof/*, e.g. /genesis) and /api/v1/public/manifest still answer 200 without a key. Docs: https://bykaranteli.com/developers; api-catalog /.well-known/api-catalog (linkset) is live. (3) MCP: https://mcp.bykaranteli.com answers initialize (serverInfo bykaranteli 0.31.0) and tools/list returns 67 tools; tool calls without a key return a key-required message. Take the LIVE count (67, npm bykaranteli-mcp 0.31.0), NOT the 51 / 0.30.6 in the issue, and do NOT describe all tools as read-only - the npm description says the alert and watchlist tools act on the account. (4) x402 catalog https://bykaranteli.com/api/x402 is live (networks Base eip155:8453 and Solana); use it as the authoritative priced list. (5) LICENCE: site data after 2026-09-10 is under the ByKaranteli Data Licence (https://bykaranteli.com/data#license; llms.txt: personal and research use with attribution, commercial use on the Business plan); older datasets stay CC0 on their mirrors. Do not take: /apis.json and /.well-known/apis.json return 404, so do not record an APIs.json for this provider. GitHub repo description is derived from apis.yml and must follow the corrected description.'
+x-enrichment:
+  date: '2026-10-02'
+  status: enriched
+  artifacts_added: 11
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local
