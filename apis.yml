@@ -66,6 +66,10 @@ maintainers:
     url: https://bykaranteli.com
 
 common:
+- type: APIsJSON
+  url: https://bykaranteli.com/apis.json
+- type: APIsJSON
+  url: https://bykaranteli.com/.well-known/apis.json
 - type: Plans
   url: plans/bykaranteli-plans-pricing.yml
 - type: Spectral
