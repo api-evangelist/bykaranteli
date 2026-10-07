@@ -66,14 +66,14 @@ maintainers:
     url: https://bykaranteli.com
 
 common:
+- type: Pricing
+  url: https://bykaranteli.com/pricing
 - url: https://bykaranteli.com/feed.xml
   type: BlogRSS
 - type: APIsJSON
   url: https://bykaranteli.com/apis.json
 - type: APIsJSON
   url: https://bykaranteli.com/.well-known/apis.json
-- type: Plans
-  url: plans/bykaranteli-plans-pricing.yml
 - type: Spectral
   url: rules/bykaranteli-rules.yml
 - type: AgentCard
