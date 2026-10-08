@@ -92,3 +92,45 @@ affiliate_revenue:
   partners: [BingX, Bitunix, OKX, HTX, Gate.io, CoinTR]
   model: 'sponsored exchange referrals; fee discount rebated by the exchange (30-45% quoted per partner)'
   note: 'Disclosed in the site footer and on the pricing page.'
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - subscription
+  units: []
+  plans:
+  - name: Public API
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: 1 month
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: 3 months
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: 6 months
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: 12 months
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
