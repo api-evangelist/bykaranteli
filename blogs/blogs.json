@@ -1,0 +1,14 @@
+{
+  "repo": "bykaranteli",
+  "feeds": [
+    {
+      "source": "https://bykaranteli.com/feed.xml",
+      "feed_url": "https://bykaranteli.com/feed.xml",
+      "title": "",
+      "saved": 8,
+      "method": "feed"
+    }
+  ],
+  "post_count": 8,
+  "fetched": "2026-10-10T13:15:00Z"
+}
