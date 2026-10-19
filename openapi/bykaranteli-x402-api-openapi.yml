@@ -2,14 +2,14 @@ openapi: 3.2.0
 info:
   title: ByKaranteli crypto derivatives data X402 API
   version: 1.0.0
-  description: Crypto derivatives market structure recorded around the clock. The live snapshots are free and unmetered; the endpoints listed here sell depth and history per call over the x402 protocol.
-  x-guidance: Free endpoints under /api/public/* need no payment or key. The /api/x402/* endpoints answer HTTP 402 with machine-readable payment requirements and settle in USDC on Solana or Base per successful response. A failed response settles nothing.
+  description: 'Crypto derivatives market structure recorded around the clock. The public endpoints are free with an account key (30 requests a minute on the Free API plan; Builder, Business and Scale plans raise the rate, add member depth and include the x402 catalog: a monthly ceiling and a history window on Builder and Business, the whole archive on Scale, the raw record routes from Business). The /api/x402/* endpoints sell depth and history per call for anonymous agents.'
+  x-guidance: Endpoints under /api/public/*, /api/liqmap/public, /api/v1/public/datasets/* and /api/series take an account key in the Authorization header (Bearer bk_...); /api/v1/public/health, /api/v1/public/manifest, /api/v1/public/sitemap.json take none. Get a free key at https://bykaranteli.com/dashboard/api; plans at https://bykaranteli.com/developers#tiers. The /api/x402/* endpoints answer HTTP 402 with machine-readable payment requirements and settle in USDC on Solana or Base per successful response, or run unpaid under a Builder or higher key within the plan's catalog allowance (tier_required, raw_tier_required, history_window and x402_allowance_used name what the plan does not include, each with how to pay per call). A failed response settles nothing.
   contact:
     email: support@bykaranteli.com
     url: https://bykaranteli.com/developers
   license:
-    name: 'Data: CC0 for published datasets'
-    url: https://bykaranteli.com/data
+    name: ByKaranteli Data Licence
+    url: https://bykaranteli.com/data#license
 servers:
 - url: https://bykaranteli.com
 tags:
@@ -29,18 +29,60 @@ paths:
     get:
       summary: 'Full multi-exchange liquidation map snapshot for a Binance USDT-M perp: modeled…'
       operationId: liqmap-levels
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: Ticker covered by LiqMap, e.g. BTC, ETH or SOL, with or without the USDT suffix (default BTC); the list is at https://bykaranteli.com/liqmap
+        schema:
+          type: string
+      - name: timeframe
+        in: query
+        required: false
+        description: 'Lookback window for the position model: 1h, 4h, 12h, 24h, 3d, 1w or 30d (default 24h)'
+        schema:
+          type: string
+      - name: leverage
+        in: query
+        required: false
+        description: 'Leverage group, default all: all, low (5x and 10x), medium (25x) or high (50x and 100x)'
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: 'One venue''s model instead of the multi-venue merge, default all: all, binance, bybit, okx, gate, htx or hyperliquid'
+        schema:
+          type: string
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Unsupported symbol or timeframe (code INVALID_SYMBOL or INVALID_TIMEFRAME); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusal, answered with how to pay per call: tier_required (the plan does not include the catalog)'
+      x-raw-records: false
+      x-included-from: builder
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.005000'
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
@@ -49,20 +91,42 @@ paths:
       - X402
   /api/x402/options-flow:
     get:
-      summary: 'BTC or ETH options tape depth from recorded Deribit flow: daily premium-flow…'
+      summary: 'BTC or ETH options tape depth from our own recorded Deribit and OKX flow: the…'
       operationId: options-flow
+      parameters:
+      - name: currency
+        in: query
+        required: false
+        description: BTC or ETH (default BTC)
+        schema:
+          type: string
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusal, answered with how to pay per call: tier_required (the plan does not include the catalog)'
+      x-raw-records: false
+      x-included-from: builder
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.005000'
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
@@ -71,42 +135,35 @@ paths:
       - X402
   /api/x402/flow-vpin:
     get:
-      summary: 'Order flow toxicity (VPIN) history for BTC, ETH and SOL: 90-day daily track…'
+      summary: 'Order flow toxicity (VPIN) history for BTC, ETH and SOL: 90-day daily VPIN…'
       operationId: flow-vpin
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusal, answered with how to pay per call: tier_required (the plan does not include the catalog)'
+      x-raw-records: false
+      x-included-from: builder
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.002000'
-        networks:
-        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
-        - eip155:8453
-        asset: USDC
-      tags:
-      - X402
-  /api/x402/premium-history:
-    get:
-      summary: 'Daily Coinbase premium history: the Coinbase versus offshore price spread per…'
-      operationId: premium-history
-      responses:
-        '200':
-          description: Requested data, returned after payment settles
-        '402':
-          description: 'Payment required: the response carries x402 payment requirements'
-      x-payment-info:
-        protocols:
-        - x402: {}
-        price:
-          mode: fixed
-          currency: USD
-          amount: '0.005000'
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
@@ -115,20 +172,66 @@ paths:
       - X402
   /api/x402/cot-history:
     get:
-      summary: 'Full CFTC Commitments of Traders weekly history for crypto futures: dealer…'
+      summary: CFTC Commitments of Traders weekly history for crypto futures with the columns…
       operationId: cot-history
+      parameters:
+      - name: from
+        in: query
+        required: false
+        description: date, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: date, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 3000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 3000
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.005000'
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
@@ -139,18 +242,316 @@ paths:
     get:
       summary: Individual liquidation events recorded from our own exchange sockets across…
       operationId: liquidations-raw
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: true
+      x-included-from: business
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.010000'
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/liquidation-leaderboard-history:
+    get:
+      summary: Per-day ranking of the largest single liquidation prints across Binance, Bybit…
+      operationId: liquidation-leaderboard-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: date, optional, default 30 days ago
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: date, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 10000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 10000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: true
+      x-included-from: business
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/networks-history:
+    get:
+      summary: Every recorded version of each asset and network row on every venue we record…
+      operationId: networks-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional asset, e.g. USDT
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: 'string, optional venue id: kucoin | gate | htx | bitget ...'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional, valid_from lower bound
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/leverage-tiers-history:
+    get:
+      summary: Every recorded version of each perpetual's leverage ladder on every venue whose…
+      operationId: leverage-tiers-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional base asset, e.g. BTC
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: 'string, optional venue id: bybit | okx | gate | htx | bitget | mexc ...'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional, valid_from lower bound
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
@@ -161,18 +562,1478 @@ paths:
     get:
       summary: Five minute open interest history for the major perpetuals in base units and…
       operationId: oi-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.005000'
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/tradfi-oi-history:
+    get:
+      summary: Five minute open interest history for the top-40 Binance TradFi perpetuals (US…
+      operationId: tradfi-oi-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional, e.g. TSLAUSDT
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/tradfi-funding-history:
+    get:
+      summary: Settled funding rate history of every Binance TradFi perpetual on our board…
+      operationId: tradfi-funding-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional, e.g. TSLAUSDT
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/indicators-events:
+    get:
+      summary: Every day since 2012 on which a Bitcoin cycle indicator crossed a canonical…
+      operationId: indicators-events
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: 'string, optional: indicator key pi_cycle|mayer|puell|ma200w|ma2y|golden_ratio|profitable_days'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, default 1000, max 5000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 5000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/rsi-history:
+    get:
+      summary: Hourly Wilder RSI(14) history for the top-400 Binance crypto perpetuals by…
+      operationId: rsi-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional, e.g. BTCUSDT
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: 'string, optional: interval filter, e.g. 4h'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/hl-whale-events:
+    get:
+      summary: Every recorded position change of the 1000 largest Hyperliquid accounts by…
+      operationId: hl-whale-events
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional coin, e.g. BTC
+        schema:
+          type: string
+      - name: address
+        in: query
+        required: false
+        description: string, optional account, 0x and 40 hex characters
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: 'string, optional kind filter: opened | closed | increased | reduced | flipped'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: true
+      x-included-from: business
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/hl-positions-history:
+    get:
+      summary: Every open position of the 1000 largest Hyperliquid accounts by equity once an…
+      operationId: hl-positions-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional coin, e.g. BTC
+        schema:
+          type: string
+      - name: address
+        in: query
+        required: false
+        description: string, optional account, 0x and 40 hex characters
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional, default 7 days ago
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional, default now
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: true
+      x-included-from: business
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/positioning-history:
+    get:
+      summary: Hourly long/short account and position ratios, taker buy/sell ratios and long…
+      operationId: positioning-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional, e.g. BTCUSDT
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: 'string, optional: binance | bybit | okx | gate | htx | bitget | kraken | bitfinex | gmx | jupiter'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/bulk-liquidations:
+    get:
+      summary: Monthly gzip CSV files of every liquidation event we recorded (exchange…
+      operationId: bulk-liquidations
+      responses:
+        '200':
+          description: One-hour signed download links, returned after payment settles, or included on a Business or higher account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s window reaches; the list holds the months that end inside it, or all'
+              schema:
+                type: string
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key'
+        '403':
+          description: 'Account key refusal, answered with how to pay per call: tier_required (bulk exports are included from the Business plan)'
+      x-raw-records: false
+      x-included-from: business
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '15.000000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/bulk-derivatives:
+    get:
+      summary: 'Monthly gzip CSV files of the derivatives tables: 5-minute Binance open…'
+      operationId: bulk-derivatives
+      responses:
+        '200':
+          description: One-hour signed download links, returned after payment settles, or included on a Business or higher account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s window reaches; the list holds the months that end inside it, or all'
+              schema:
+                type: string
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key'
+        '403':
+          description: 'Account key refusal, answered with how to pay per call: tier_required (bulk exports are included from the Business plan)'
+      x-raw-records: false
+      x-included-from: business
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '10.000000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/bulk-flow:
+    get:
+      summary: 'Monthly gzip CSV files of the flow tables: $1M+ aggressive prints from our own…'
+      operationId: bulk-flow
+      responses:
+        '200':
+          description: One-hour signed download links, returned after payment settles, or included on a Business or higher account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s window reaches; the list holds the months that end inside it, or all'
+              schema:
+                type: string
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key'
+        '403':
+          description: 'Account key refusal, answered with how to pay per call: tier_required (bulk exports are included from the Business plan)'
+      x-raw-records: false
+      x-included-from: business
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '10.000000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/jupiter-history:
+    get:
+      summary: 'Hourly Jupiter Perps history per market (SOL, ETH, BTC) and metric: long and…'
+      operationId: jupiter-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: 'string, optional market: SOL | ETH | BTC | JLP'
+        schema:
+          type: string
+      - name: metric
+        in: query
+        required: false
+        description: 'string, optional: long_oi_usd | long_oi_guaranteed_usd | short_oi_usd | long_util_pct | short_util_pct | long_borrow_hourly_pct | short_borrow_hourly_pct | custody_aum_usd | price_usd | volume_24h_usd, and for JLP aum_usd | apr_pct | price_usd'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/market-profile-history:
+    get:
+      summary: 'Daily Market Profile per perpetual from our own minute bars: 30-minute TPO…'
+      operationId: market-profile-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: 'string, required: BTC or BTCUSDT'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: YYYY-MM-DD, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: YYYY-MM-DD, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/venue-share-history:
+    get:
+      summary: Hourly recorded liquidations per counted venue (Binance, Bybit, OKX, Gate, HTX…
+      operationId: venue-share-history
+      parameters:
+      - name: exchange
+        in: query
+        required: false
+        description: 'string, optional: binance | bybit | okx | gate | htx | dydx | aster | lighter | deribit | kraken | gmx'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional, default 7 days ago
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional, default now
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/solana-perps-history:
+    get:
+      summary: Hourly history of every Solana perp venue on the board but Jupiter…
+      operationId: solana-perps-history
+      parameters:
+      - name: venue
+        in: query
+        required: false
+        description: 'string, optional: pacifica | phoenix | gmtrade | velocity | bullet'
+        schema:
+          type: string
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional market as the venue names it, e.g. SOL, SOL-PERP, SOL-USD, USDCAD
+        schema:
+          type: string
+      - name: metric
+        in: query
+        required: false
+        description: 'string, optional: oi_usd | oi_long_usd | oi_short_usd | volume_24h_usd | funding_hourly_pct | mark_usd | funding_accumulator_raw'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional, default 30 days ago
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional, default now
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, default 1000, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/turkey-premium-history:
+    get:
+      summary: 'Minute history of the Turkey premium index (from 2026-09-17): TRY and USDT…'
+      operationId: turkey-premium-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: 'string, optional pair: BTC-TRY | ETH-TRY | USDT-TRY | BTC-USDT | ETH-USDT'
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: 'string, optional: a venue id such as btcturk to return that venue''s book rows instead of the index'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/desk-notes-history:
+    get:
+      summary: 'The desk notes archive (from 2026-10-12): every short dated observation the…'
+      operationId: desk-notes-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional coin the note names, e.g. BTC
+        schema:
+          type: string
+      - name: metric
+        in: query
+        required: false
+        description: string, optional card type, e.g. funding-arb or event-liq-burst
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 5000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 5000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/insurance-fund-history:
+    get:
+      summary: Hourly insurance fund readings per pool on Binance, Bybit, OKX, Gate, MEXC…
+      operationId: insurance-fund-history
+      parameters:
+      - name: venue
+        in: query
+        required: false
+        description: 'string, optional: binance | bybit | okx | gate | mexc | bitfinex | cryptocom | delta | dydx | paradex'
+        schema:
+          type: string
+      - name: asset
+        in: query
+        required: false
+        description: string, optional, e.g. USDT
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/tokenized-stocks-history:
+    get:
+      summary: Hourly readings per tokenized stock wrapper from 12 issuers (the issuer filter…
+      operationId: tokenized-stocks-history
+      parameters:
+      - name: wrapper
+        in: query
+        required: false
+        description: string, required, e.g. TSLAx
+        schema:
+          type: string
+      - name: chain
+        in: query
+        required: false
+        description: 'string, optional: solana | ethereum | bnb | arbitrum | base | robinhood | ton | mantle | optimism | ink | hyperevm | xlayer | tron | linea | morph | provenance | plume | algorand | cex'
+        schema:
+          type: string
+      - name: issuer
+        in: query
+        required: false
+        description: 'string, optional: xstocks | robinhood | coinbase | bstocks | ondo | backpack | gstocks | reality | superstate | figure | dinari | securitize'
+        schema:
+          type: string
+      - name: days
+        in: query
+        required: false
+        description: number, optional, 1..366, default 7
+        schema:
+          type: number
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/prepaid-key:
+    get:
+      summary: Buy a prepaid API key loaded with $10 of credit for every paid route on this…
+      operationId: prepaid-key
+      parameters:
+      - name: key
+        in: query
+        required: false
+        description: 'string, optional: an existing bk_live key to top up'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The minted or topped-up prepaid key with its balance (the plain key is shown once)
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key. Credit is bought, never included: an account key is answered payment_required_for_credit'
+        '409':
+          description: This payment was already credited (code payment_already_credited); send a fresh payment for another top-up
+      x-raw-records: false
+      x-included-from: null
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '10.000000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/orderbook-history:
+    get:
+      summary: 5-minute spot order book depth snapshots on 29 venues, recorded since…
+      operationId: orderbook-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional, e.g. BTC
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: 'string, optional venue: binance | coinbase | kraken | bybit | okx | gate | mexc | htx | bitget | bitstamp | gemini | bitfinex | bingx | cryptocom | backpack | binanceus | poloniex | lbank | bitrue | xt | hashkey | digifinex | bullish | weex | deribit | aster | bitvavo | independentreserve | btcturk'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 5000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 5000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: true
+      x-included-from: business
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
@@ -181,20 +2042,78 @@ paths:
       - X402
   /api/x402/funding-history:
     get:
-      summary: Settled funding rate history per symbol and venue, the series behind carry and…
+      summary: Settled funding rate history of every Binance USDT-M perpetual, crypto and…
       operationId: funding-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional, BTC or BTCUSDT, without it the newest rows of every contract up to the row cap
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: 'string, optional, binance: the only venue in this table'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.005000'
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
@@ -203,86 +2122,164 @@ paths:
       - X402
   /api/x402/options-oi-history:
     get:
-      summary: 'Daily listed options open interest per instrument: strike, expiry, option type…'
+      summary: Daily listed options open interest per instrument on Deribit, Bybit, Binance…
       operationId: options-oi-history
+      parameters:
+      - name: currency
+        in: query
+        required: false
+        description: string, optional BTC or ETH
+        schema:
+          type: string
+      - name: venue
+        in: query
+        required: false
+        description: 'string, optional options venue: deribit | bybit | binance | okx | delta'
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: date, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: date, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.005000'
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
         asset: USDC
       tags:
       - X402
-  /api/x402/dvol-history:
+  /api/x402/options-chain-history:
     get:
-      summary: Daily implied volatility index history for BTC and ETH going back to 2021, the…
-      operationId: dvol-history
+      summary: Hourly listed options chain per instrument on Deribit, Bybit, Binance, OKX and…
+      operationId: options-chain-history
+      parameters:
+      - name: currency
+        in: query
+        required: false
+        description: string, optional BTC | ETH
+        schema:
+          type: string
+      - name: venue
+        in: query
+        required: false
+        description: 'string, optional options venue: deribit | bybit | binance | okx | delta'
+        schema:
+          type: string
+      - name: expiry
+        in: query
+        required: false
+        description: string, optional expiry label e.g. 30OCT26
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: date or timestamp, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: date or timestamp, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: false
+      x-included-from: builder
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.002000'
-        networks:
-        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
-        - eip155:8453
-        asset: USDC
-      tags:
-      - X402
-  /api/x402/slippage-history:
-    get:
-      summary: 'Hourly recorded execution slippage ladders per symbol: what a given order size…'
-      operationId: slippage-history
-      responses:
-        '200':
-          description: Requested data, returned after payment settles
-        '402':
-          description: 'Payment required: the response carries x402 payment requirements'
-      x-payment-info:
-        protocols:
-        - x402: {}
-        price:
-          mode: fixed
-          currency: USD
-          amount: '0.002000'
-        networks:
-        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
-        - eip155:8453
-        asset: USDC
-      tags:
-      - X402
-  /api/x402/listings-history:
-    get:
-      summary: Perpetual listing and delisting events across six exchanges with first seen…
-      operationId: listings-history
-      responses:
-        '200':
-          description: Requested data, returned after payment settles
-        '402':
-          description: 'Payment required: the response carries x402 payment requirements'
-      x-payment-info:
-        protocols:
-        - x402: {}
-        price:
-          mode: fixed
-          currency: USD
-          amount: '0.002000'
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
@@ -293,21 +2290,245 @@ paths:
     get:
       summary: Minute bars with the taker buy versus total quote volume split, pre-joined…
       operationId: spot-microstructure
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
       responses:
         '200':
-          description: Requested data, returned after payment settles
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
         '402':
-          description: 'Payment required: the response carries x402 payment requirements'
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: true
+      x-included-from: business
       x-payment-info:
         protocols:
         - x402: {}
         price:
           mode: fixed
           currency: USD
-          amount: '0.010000'
+          amount: '0.100000'
         networks:
         - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
         - eip155:8453
         asset: USDC
       tags:
       - X402
+  /api/x402/venue-markets-history:
+    get:
+      summary: Ten-minute snapshots of price, 24h volume, open interest and 8h-equivalent…
+      operationId: venue-markets-history
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: string, optional, venue id e.g. binance|bybit|hyperliquid
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 20000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 20000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: true
+      x-included-from: business
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+  /api/x402/whale-trades-raw:
+    get:
+      summary: Every $1M+ aggressive market print recorded live from our own trade sockets…
+      operationId: whale-trades-raw
+      parameters:
+      - name: symbol
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: exchange
+        in: query
+        required: false
+        description: string, optional
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        description: iso, optional
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: number, optional, max 10000
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 10000
+      responses:
+        '200':
+          description: Requested data, returned after payment settles, or included on a paid plan's account key
+          headers:
+            x-history-window-days:
+              description: 'Included answers: days back the plan''s catalog window reaches from 00:00 UTC, or all'
+              schema:
+                type: string
+            x-history-row-cap:
+              description: 'Included answers: the most rows one included call returns'
+              schema:
+                type: integer
+            x-x402-allowance-limit:
+              description: Included answers where a monthly ceiling applies
+              schema:
+                type: integer
+            x-x402-allowance-used:
+              description: Included catalog calls used this calendar month (UTC)
+              schema:
+                type: integer
+        '400':
+          description: Invalid query (code INVALID_QUERY); never charged
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+        '402':
+          description: 'Payment required: the response carries x402 payment requirements, plus credential_reason and credential_hint when a key header was present but carried no usable key; with an account key past the plan''s monthly ceiling, code x402_allowance_used'
+        '403':
+          description: 'Account key refusals, each answered with how to pay per call: tier_required (the plan does not include the catalog or the bulk files), raw_tier_required (raw record routes below Business), history_window (rows before the plan''s window)'
+      x-raw-records: true
+      x-included-from: business
+      x-payment-info:
+        protocols:
+        - x402: {}
+        price:
+          mode: fixed
+          currency: USD
+          amount: '0.100000'
+        networks:
+        - solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp
+        - eip155:8453
+        asset: USDC
+      tags:
+      - X402
+components:
+  securitySchemes:
+    accountKey:
+      type: http
+      scheme: bearer
+      description: 'Account API key (bk_...). Free with a verified account: https://bykaranteli.com/dashboard/api'
