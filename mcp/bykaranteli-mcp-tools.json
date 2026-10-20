@@ -1,4 +1,12 @@
 {
+  "endpoint": "https://mcp.bykaranteli.com",
+  "captured": "2026-10-20",
+  "method": "initialize + tools/list (anonymous, no tool called; roadmap#992)",
+  "protocol_version": "2025-06-18",
+  "server_info": {
+    "name": "bykaranteli",
+    "version": "0.36.0"
+  },
   "result": {
     "tools": [
       {
@@ -12,7 +20,8 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Crypto market indices (Fear & Greed, BTC dominance, euphoria)"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -21,46 +30,24 @@
       {
         "name": "get_liquidations",
         "title": "Crypto liquidations: daily long/short totals per symbol and exchange",
-        "description": "Call this when the user asks how much was liquidated in crypto futures, whether longs or shorts got flushed, or for liquidation history. Returns daily long and short liquidation totals in USD per symbol and exchange, recorded from ByKaranteli's own Binance, Bybit and OKX stream collectors (recorded events, a floor, not estimates). One row per finalized UTC day, symbol and exchange; history begins 2026-07-30 and grows daily.",
+        "description": "Call this when the user asks how much was liquidated in crypto futures, whether longs or shorts got flushed, or for liquidation history. Returns daily long and short liquidation totals in USD per symbol and exchange, recorded from ByKaranteli's own stream collectors on every liquidation venue it counts, listed on bykaranteli.com/coverage (recorded events, a floor, not estimates). One row per finalized UTC day, symbol and exchange; history begins 2026-07-30 and grows daily. Without symbol, rows holds the first 30 rows (newest day, largest first) while summary covers every matching row; pass symbol or limit (up to 400) for more rows.",
         "inputSchema": {
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
           "properties": {
             "symbol": {
+              "description": "Optional symbol filter like BTCUSDT or ETHUSDT. Omit for all symbols.",
               "type": "string",
               "pattern": "^[A-Z0-9]{2,20}$"
             },
             "days": {
+              "description": "How many most recent days to return (default 7).",
               "type": "integer",
               "minimum": 1,
               "maximum": 90
-            }
-          }
-        },
-        "annotations": {
-          "readOnlyHint": true,
-          "openWorldHint": true
-        },
-        "execution": {
-          "taskSupport": "forbidden"
-        }
-      },
-      {
-        "name": "get_etf_flows",
-        "title": "US spot Bitcoin and Ethereum ETF daily flows",
-        "description": "Call this when the user asks about Bitcoin or Ethereum ETF flows: daily net inflows or outflows, cumulative flow since launch, or total net assets of the US spot ETFs (IBIT, FBTC, ETHA and the rest). Returns one row per finalized US trading day and asset with net inflow, total net assets, cumulative inflow and value traded, all in USD. About 14 months of history.",
-        "inputSchema": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-          "type": "object",
-          "properties": {
-            "asset": {
-              "type": "string",
-              "enum": [
-                "BTC",
-                "ETH"
-              ]
             },
-            "days": {
+            "limit": {
+              "description": "Optional. Rows to return, newest day first and largest first within a day (default 30 without symbol, 400 with one).",
               "type": "integer",
               "minimum": 1,
               "maximum": 400
@@ -69,7 +56,43 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Crypto liquidations: daily long/short totals per symbol and exchange"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_etf_flows",
+        "title": "US spot Bitcoin, Ethereum, Solana and XRP ETF daily flows",
+        "description": "Call this when the user asks about Bitcoin, Ethereum, Solana or XRP spot ETF flows: daily net inflows or outflows, cumulative flow since launch, or total net assets of the US spot ETFs (IBIT, FBTC, ETHA, XRPC and the rest). Returns one row per finalized US trading day and asset with net inflow, total net assets, cumulative inflow since launch and value traded, all in USD. History by asset: BTC and ETH since 2025-05-20, SOL since 2025-10-28, XRP since 2026-09-08.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "asset": {
+              "description": "Filter to one asset (BTC, ETH, SOL or XRP). Omit for all.",
+              "type": "string",
+              "enum": [
+                "BTC",
+                "ETH",
+                "SOL",
+                "XRP"
+              ]
+            },
+            "days": {
+              "description": "How many most recent trading days to return (default 10).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 400
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "US spot Bitcoin, Ethereum, Solana and XRP ETF daily flows"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -77,20 +100,22 @@
       },
       {
         "name": "get_funding_heatmap",
-        "title": "Funding rates across top-30 Binance perps",
-        "description": "Call this when the user asks for the full current funding table across the top-30 Binance perp universe, or the funding rate of one specific coin. For a pre-ranked top-10 of the most extreme funding rates, use get_top_movers instead. Returns per-symbol funding rate (per settlement interval), 24h open interest change and 24h price change for the top-30 Binance USDT-M perpetuals. Positive funding means longs pay shorts.",
+        "title": "Funding rates across the ~30 most traded Binance perps",
+        "description": "Call this when the user asks for the full current funding table across the ~30 most traded Binance perps (28-30 rows; contracts without a live funding print are skipped), or the funding rate of one specific coin. For a pre-ranked top-10 of the most extreme funding rates, use get_top_movers instead. Returns per-symbol funding rate (per settlement interval), 24h open interest change and 24h price change for the most traded Binance USDT-M perpetuals. Positive funding means longs pay shorts.",
         "inputSchema": {
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
           "properties": {
             "symbol": {
+              "description": "Optional. Filter to one symbol, e.g. BTCUSDT or just BTC. Omit to get all 30 rows.",
               "type": "string"
             }
           }
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Funding rates across the ~30 most traded Binance perps"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -99,15 +124,21 @@
       {
         "name": "get_funding_arbitrage",
         "title": "Cross-exchange funding arbitrage opportunities",
-        "description": "Call this when the user asks about funding arbitrage, funding rate differences between exchanges, or delta-neutral carry trades. Compares funding across Binance, OKX, Bybit, Gate, HTX and BingX for 12 major perps and returns the best long/short venue per symbol with gross and net annualized APR (net of taker fees and weekly rebalance cost).",
+        "description": "Call this when the user asks about funding arbitrage, funding rate differences between exchanges, or delta-neutral carry trades. Compares funding across every venue on the board, from Binance, OKX and Bybit to Hyperliquid, dYdX and the smaller perp venues fed by the venue snapshot, for 12 major perps and returns the best long/short venue per symbol with gross and net annualized APR (net of taker fees and weekly rebalance cost). Each row lists its first 5 venue legs; pass symbol for every leg of one perp.",
         "inputSchema": {
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
-          "properties": {}
+          "properties": {
+            "symbol": {
+              "description": "Optional. One perp, e.g. BTCUSDT or BTC: its row with every venue leg.",
+              "type": "string"
+            }
+          }
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Cross-exchange funding arbitrage opportunities"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -122,9 +153,11 @@
           "type": "object",
           "properties": {
             "symbol": {
+              "description": "Optional. Return only this symbol, e.g. BTCUSDT or BTC.",
               "type": "string"
             },
             "limit": {
+              "description": "Optional. Max rows to return when no symbol filter is set (default 20, sorted by score).",
               "type": "integer",
               "minimum": 1,
               "maximum": 50
@@ -133,7 +166,8 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Derivatives pressure scores (funding + OI + basis composite)"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -150,81 +184,8 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
-        },
-        "execution": {
-          "taskSupport": "forbidden"
-        }
-      },
-      {
-        "name": "get_recent_signals",
-        "title": "Recent closed trading signals with verified outcomes",
-        "description": "Call this when the user asks how the ByKaranteli signal engine is doing today, or wants recent closed LONG/SHORT signals with real outcomes (TP1, SL or TIMEOUT) and net basis-point results. Includes a 24h summary (wins, losses, net bps). Every signal is published with a SHA-256 receipt and results are net of fees, slippage and funding; live signals only, never backtests.",
-        "inputSchema": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-          "type": "object",
-          "properties": {}
-        },
-        "annotations": {
-          "readOnlyHint": true,
-          "openWorldHint": true
-        },
-        "execution": {
-          "taskSupport": "forbidden"
-        }
-      },
-      {
-        "name": "get_symbol_performance",
-        "title": "Per-symbol signal performance and recent trades",
-        "description": "Call this when the user asks how signals performed on a specific coin (win rate, profit factor, net PnL, best/worst trade) or wants that coin's recent closed signals. Data is the live verified track record for one Binance USDT-M perp over a 30, 90 or 180 day window.",
-        "inputSchema": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-          "type": "object",
-          "properties": {
-            "symbol": {
-              "type": "string"
-            },
-            "window_days": {
-              "anyOf": [
-                {
-                  "type": "number",
-                  "const": 30
-                },
-                {
-                  "type": "number",
-                  "const": 90
-                },
-                {
-                  "type": "number",
-                  "const": 180
-                }
-              ]
-            }
-          },
-          "required": [
-            "symbol"
-          ]
-        },
-        "annotations": {
-          "readOnlyHint": true,
-          "openWorldHint": true
-        },
-        "execution": {
-          "taskSupport": "forbidden"
-        }
-      },
-      {
-        "name": "get_strategy_leaderboard",
-        "title": "Strategy leaderboard with verified live results",
-        "description": "Call this when the user asks which trading strategies are performing best, or wants win rate, profit factor, drawdown and Sharpe per strategy. Rankings are computed from live closed signals only (no backtests), net of fees.",
-        "inputSchema": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-          "type": "object",
-          "properties": {}
-        },
-        "annotations": {
-          "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Top movers: OI spikes, extreme funding, widest basis, highest stress"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -241,7 +202,8 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "CME futures positioning (weekly COT report, BTC + ETH)"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -250,15 +212,29 @@
       {
         "name": "get_options_snapshot",
         "title": "Options walls, gamma exposure and DVOL (BTC + ETH)",
-        "description": "Call this when the user asks where the big options bets sit, about call/put walls, gamma exposure (GEX), the zero-gamma level, implied volatility (DVOL) or the IV term structure for Bitcoin or Ethereum. Daily snapshot of listed crypto options: top strikes by open interest, put/call ratio, dealer hedging map and ATM IV by expiry.",
+        "description": "Call this when the user asks where the big options bets sit, about call/put walls, gamma exposure (GEX), the zero-gamma level, implied volatility (DVOL) or the IV term structure for Bitcoin or Ethereum, across options venues or on one venue. Daily snapshot of the listed option chains of every options venue we record, summed by default or one venue with venue: the call wall (largest call open interest above spot) and put wall (largest put open interest below spot), the largest bars on the whole axis, top strikes by open interest, put/call ratio, dealer hedging map, ATM IV by expiry (calls and puts interpolated at the money, iv_source names the venue whose quotes price the chain), each venue's open interest (venues_included), and per expiry the open interest by side, the max pain strike (where the open contracts as a group pay out the least at settlement, not a price target) and the one-sigma implied move the ATM IV prices (expiries). DVOL is Deribit's index whatever the venue.",
         "inputSchema": {
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
-          "properties": {}
+          "properties": {
+            "venue": {
+              "description": "all (default) sums every options venue; or one venue id: deribit, bybit, binance, okx or delta (Delta Exchange India).",
+              "type": "string",
+              "enum": [
+                "all",
+                "deribit",
+                "bybit",
+                "binance",
+                "okx",
+                "delta"
+              ]
+            }
+          }
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Options walls, gamma exposure and DVOL (BTC + ETH)"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -267,15 +243,23 @@
       {
         "name": "get_coinbase_premium",
         "title": "Coinbase Premium (US demand gauge) + carry yield",
-        "description": "Call this when the user asks whether US investors are buying or selling Bitcoin or Ethereum, about the Coinbase Premium, or what the cash-and-carry basis trade pays. Returns the latest daily premium in percent, 7-day average, same-sign streak, the last 30 days, and annualized quarterly carry yields. History since 2017; positive premium = US buying pressure.",
+        "description": "Call this when the user asks whether US investors are buying or selling Bitcoin or Ethereum, about the Coinbase Premium, or what the cash-and-carry basis trade pays. Returns the latest daily premium in percent, 7-day average, same-sign streak, the last 30 days, and annualized quarterly carry yields. History since 2017; positive premium = US buying pressure. The kimchi and Turkey premium daily rows cover the last 7 days; pass days (up to 90) for more.",
         "inputSchema": {
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
-          "properties": {}
+          "properties": {
+            "days": {
+              "description": "Optional. Days of kimchi and Turkey premium daily rows, newest first (default 7, up to 90).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 90
+            }
+          }
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Coinbase Premium (US demand gauge) + carry yield"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -292,7 +276,8 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Order-flow toxicity (VPIN) for BTC, ETH, SOL perps"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -301,7 +286,7 @@
       {
         "name": "get_options_flow",
         "title": "Options tape: biggest prints and premium flow (BTC + ETH)",
-        "description": "Call this when the user asks what big options players are buying, about block trades, or whether call or put premium dominates today. Returns 24h call vs put premium bought, the block-trade share, and the largest prints of the last 48 hours with strikes, premium and IV. Updated every 15 minutes.",
+        "description": "Call this when the user asks what big options players are buying, about block trades, or whether call or put premium dominates today. Returns 24h call vs put premium bought (net of the sold legs of the same multi-leg block or combo, so a spread counts its net premium), the block-trade share, the multi-leg structure count, and the largest prints of the last 48 hours with strikes, premium, IV, structure id and venue (Deribit or OKX). Updated every 15 minutes.",
         "inputSchema": {
           "$schema": "http://json-schema.org/draft-07/schema#",
           "type": "object",
@@ -309,7 +294,8 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Options tape: biggest prints and premium flow (BTC + ETH)"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -326,7 +312,8 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Live execution cost: what a market order really costs"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -343,7 +330,8 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Measured FOMC impact on Bitcoin"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -360,7 +348,140 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Auto-detected liquidation cascades (forensic case file)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_liquidation_leaderboard",
+        "title": "Largest single liquidations and a 30-day session heatmap (counted venue feeds)",
+        "description": "Call this when the user asks for the biggest liquidation today or this week, who got liquidated for the most, the largest single liquidation print, or when in the day or week liquidations cluster (Asia, Europe or US hours, weekday by UTC hour). Returns the largest single liquidation prints of the last 24h, 7d or 30d (rank, symbol, venue, side where SELL means a long was liquidated, price, quantity, notional, millisecond time) recorded from the counted venues' public feeds, plus a 30-day weekday by UTC hour heatmap with hour, weekday and session totals. Binance publishes at most one print per second per symbol, so its rows are a floor.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "window": {
+              "description": "Ranking window: 24h (default), 7d or 30d.",
+              "type": "string",
+              "enum": [
+                "24h",
+                "7d",
+                "30d"
+              ]
+            },
+            "limit": {
+              "description": "Rows to return (default 25, max 100).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "days": {
+              "description": "Days folded into the session heatmap (default 30).",
+              "type": "integer",
+              "minimum": 7,
+              "maximum": 90
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Largest single liquidations and a 30-day session heatmap (counted venue feeds)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_insurance_funds",
+        "title": "Exchange insurance funds: size, 24h and 7d change, fund against open interest, daily history",
+        "description": "Call this when the user asks how big an exchange's insurance fund is, whether a fund is shrinking or was used after a crash, how much exchanges hold to absorb bankrupt liquidations, or how a fund compares with the venue's open interest. Returns the latest hourly reading per covered venue (every exchange the insurance fund board lists): the fund in USD (OKX's own published total, the sum of priced pools elsewhere), per asset, 24h and 7d change, the fund as a percent of the venue's perpetual open interest on the coins ByKaranteli tracks, and daily closes per venue. Set pools to include every pool row (the contracts it covers, asset, balance, USD). A fund is a balance the venue reports, not an audit of its reserves.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "venue": {
+              "description": "One venue; omit for every covered venue.",
+              "type": "string",
+              "enum": [
+                "binance",
+                "bybit",
+                "okx",
+                "gate"
+              ]
+            },
+            "history_days": {
+              "description": "Days of daily closes (default 30, max 366).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 366
+            },
+            "pools": {
+              "description": "Include every pool row (large for Binance and Bybit). Default false.",
+              "type": "boolean"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Exchange insurance funds: size, 24h and 7d change, fund against open interest, daily history"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_tokenized_stocks",
+        "title": "Tokenized stocks onchain: supply, premium to the real share, DEX pools and exchange pairs",
+        "description": "Call this when the user asks about tokenized stocks or stock tokens (xStocks, Ondo, Robinhood stock tokens, Coinbase tokenized stocks on Base, Binance bStocks, Backpack, Gate gStocks, Reality, Superstate, Figure, Dinari dShares, Securitize): how much of a stock exists onchain, which issuer or chain holds the most, whether a wrapper trades above or below the real share, which DEX pools or exchanges trade it. Returns the board ByKaranteli refreshes every 10 minutes: per underlying the reference share price and its session, each wrapper (issuer, chain, price, premium_pct against a fresh reference, DEX liquidity and 24h volume from admitted pools, supply in shares and dollars, holders, status), tokenized spot pairs on the exchanges the board lists, the perpetual futures cross, and totals (supply by issuer and chain, DEX volume, median premium). Each wrapper's price_source names the price that valued its supply dollars (reference: the share's reference price; issuer_oracle: the issuer's own price for the token; wrapper: its own pool or exchange price; null: no dollars), and totals.priced_by counts the counted wrappers per level, unpriced included. Wrappers come from issuer sources only, never from a name search. Without underlying, each stock lists its first 3 wrappers and 3 exchange pairs; pass underlying for all of them.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "underlying": {
+              "description": "Stock ticker, e.g. TSLA; omit for the whole board.",
+              "type": "string",
+              "pattern": "^[A-Za-z0-9.]{1,16}$"
+            },
+            "issuer": {
+              "description": "One issuer: xstocks, robinhood, coinbase, bstocks, ondo, backpack, gstocks, reality, superstate, figure, dinari or securitize; omit for every issuer.",
+              "type": "string",
+              "enum": [
+                "xstocks",
+                "robinhood",
+                "coinbase",
+                "bstocks",
+                "ondo",
+                "backpack",
+                "gstocks",
+                "reality",
+                "superstate",
+                "figure",
+                "dinari",
+                "securitize"
+              ]
+            },
+            "chain": {
+              "description": "One chain, e.g. solana, base, bnb, robinhood, ethereum, ton, all (xStocks circulating) or cex (exchange pairs).",
+              "type": "string",
+              "pattern": "^[a-z]{2,12}$"
+            },
+            "top": {
+              "description": "Rows by supply (default 10, max 200).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Tokenized stocks onchain: supply, premium to the real share, DEX pools and exchange pairs"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -377,7 +498,8 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "Intraday open interest and leverage regimes (10 major perps)"
         },
         "execution": {
           "taskSupport": "forbidden"
@@ -394,14 +516,1563 @@
         },
         "annotations": {
           "readOnlyHint": true,
-          "openWorldHint": true
+          "openWorldHint": true,
+          "title": "PsiCharge liquidity state (proprietary model, outcomes published)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_altseason",
+        "title": "Altcoin Season Index (live + recorded history)",
+        "description": "Call this when the user asks whether it is altseason, how altcoins are doing against Bitcoin, or about market rotation. Returns the live Altcoin Season Index (share of the top 50 Binance perpetual altcoins beating BTC over the trailing 90 days; >=75 altseason, <=25 bitcoin season), the strongest and weakest large alts, and the recorded daily history (never reconstructed).",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Altcoin Season Index (live + recorded history)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_quantum_exposure",
+        "title": "Quantum-exposed Bitcoin (daily first-party measurement)",
+        "description": "Call this when the user asks how much Bitcoin is vulnerable to a quantum computer, about quantum-exposed supply, P2PK coins, or Satoshi-era exposure. Returns the latest daily measurement from ByKaranteli's own Bitcoin Core node: exposed BTC and its share of held value and UTXO count, composition by script family, dormancy cohorts, the dormant-P2PK watch set, and provenance hashes (base_height, base_hash, txoutset_hash) so any figure can be re-verified against any node.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Quantum-exposed Bitcoin (daily first-party measurement)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_metric_context",
+        "title": "Historical context for any recorded metric (conditional distribution)",
+        "description": "Call this when the user asks whether a metric's current reading is high or low, or what happened after similar readings. Buckets today's value against the metric's own recorded daily history and returns the median forward BTC return and up-share per bucket at +1/+3/+7 days, with the all-days base rate alongside. Honesty rules: buckets under 30 days are suppressed, and most metrics do NOT separate from the base rate; the interpretation says so plainly. History, not a forecast. Metrics include coinbase_premium_pct, kraken_btc_premium_pct, dvol_btc, fear_greed, funding_btc_daily_pct, etf_btc_net_flow_usd, vpin_btc, altseason_index, stablecoin_total_mcap_busd, fred_dff, fred_dgs10, fred_walcl_busd, fred_rrp_busd and the btc_* network series.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "metric": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{2,50}$",
+              "description": "Metric key, e.g. coinbase_premium_pct, fear_greed, altseason_index, stablecoin_total_mcap_busd."
+            }
+          },
+          "required": [
+            "metric"
+          ]
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Historical context for any recorded metric (conditional distribution)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_theme_indices",
+        "title": "Crypto narrative indices (AI, RWA, DePIN, meme, L1, L2, DeFi, quantum)",
+        "description": "Call this when the user asks which crypto narrative or sector is leading, about rotation between AI, RWA, DePIN, memecoins, layer 1, layer 2, DeFi or quantum coins, or for a theme index. Returns eight equal-weight fixed-basket indices rebased to 100 on 2025-01-01 with 1d/7d/30d/90d/YTD returns, vs BTC, and the member lists; daily points are omitted unless include_points is true.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "include_points": {
+              "description": "boolean, optional: include the daily index points (large)",
+              "type": "boolean"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Crypto narrative indices (AI, RWA, DePIN, meme, L1, L2, DeFi, quantum)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_factor_board",
+        "title": "Factor board: what followed days like today across recorded metrics",
+        "description": "Call this when the user asks which indicators currently sit in an unusual band, whether a metric's current level historically preceded BTC moves, or for a cross-metric conditional overview. Returns every recorded metric in its historical band with the median 7-day BTC move that followed versus the base rate, with an n >= 30 gate; distributions, not forecasts.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Factor board: what followed days like today across recorded metrics"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_borrow_rates",
+        "title": "Margin borrow rates per venue: the cost of leverage, hourly",
+        "description": "Call this when the user asks what it costs to borrow USDT, USDC, BTC, ETH or a major alt on an exchange, which venue has the cheapest borrow, whether stablecoin borrow cost is spiking, or what the carry of a basis trade is on a venue (funding minus borrow). Returns the latest annualised rate per venue and asset, 30 days of hourly series for the stablecoins and majors, and the carry table. Recorded hourly by ByKaranteli (Binance and OKX today). The series hold the last 24 hours unless hours (up to 720) or asset is passed.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "asset": {
+              "description": "Optional. One asset, e.g. USDT: its rates, carry and full 30-day series.",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{2,12}$"
+            },
+            "hours": {
+              "description": "Optional. Hours of hourly series to return (default 24, or the full 720 with asset).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 720
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Margin borrow rates per venue: the cost of leverage, hourly"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_fee_table",
+        "title": "Trading fee schedules per venue, base tier maker and taker",
+        "description": "Call this when the user asks what an exchange charges to trade, how maker and taker fees compare across venues, whether a venue changed its fees, or what a round trip costs on a given notional. Returns base tier maker and taker per venue and market type (median across pairs where the venue prices per pair) and the fee change log, read daily by ByKaranteli from each venue's own fee endpoint.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Trading fee schedules per venue, base tier maker and taker"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_settlements",
+        "title": "Expiry calendar and settlement prices across venues",
+        "description": "Call this when the user asks what futures or options expire soon, when the next quarterly expiry is on an exchange, how many contracts settle this week, or at what price a dated future settled. Returns the next 60 days of dated future and option expiries grouped by date, venue and underlying from 54 venues' market lists, plus the settlement prices recorded as dated futures deliver. Without base, the first 30 expiry rows and the 30 newest settlement prices; pass base for one asset's full lists, or limit (up to 300).",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "base": {
+              "description": "Optional. One underlying, e.g. BTC: every expiry row and settlement price of that asset.",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{1,16}$"
+            },
+            "limit": {
+              "description": "Optional. Rows per list without base (default 30): expiries soonest first, settlements newest first.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Expiry calendar and settlement prices across venues"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_venue_profile",
+        "title": "Venue profile: everything ByKaranteli records about one exchange",
+        "description": "Call this when the user asks about a specific exchange (Bybit, OKX, Gate, KuCoin, HTX, Bitget, MEXC, BitMEX, Hyperliquid ...): how many contracts it lists, its perp open interest and average funding, its leverage ladders, deposit and withdrawal networks and how many are paused, its base fee schedule, its status uptime and the recent event log (listings, delistings, leverage cuts, withdrawal pauses, incidents). Without venue returns the list of recorded venues.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "venue": {
+              "description": "string, optional venue id, e.g. bybit",
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Venue profile: everything ByKaranteli records about one exchange"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_withdrawal_status",
+        "title": "Withdrawal status and network fees: which exchanges paused withdrawals, per asset and network",
+        "description": "Call this when the user asks whether an exchange has paused withdrawals or deposits, which networks are open for an asset, what the withdrawal fee or minimum is on each venue, or which venue is cheapest to withdraw from. Without arguments returns the overview (withdrawals paused right now, ranked, plus recent suspension and resumption events). Pass asset (e.g. USDT) for every venue and network of that asset, and venue (e.g. kucoin) to narrow. Recorded daily by ByKaranteli from 20+ venues' public currency lists. The overview lists the first 30 paused networks and the 30 newest events; pass asset, or limit (up to 400) for more.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "asset": {
+              "description": "string, optional asset code, e.g. USDT",
+              "type": "string"
+            },
+            "venue": {
+              "description": "string, optional venue id, e.g. kucoin",
+              "type": "string"
+            },
+            "limit": {
+              "description": "Optional. Rows of the overview lists (paused networks, events) without asset (default 30).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 400
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Withdrawal status and network fees: which exchanges paused withdrawals, per asset and network"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_leverage_tiers",
+        "title": "Leverage tiers: max leverage and maintenance margin per perpetual on every venue",
+        "description": "Call this when the user asks how much leverage an exchange allows on a coin, what the maintenance margin or risk limit ladder is, which venue offers the highest leverage for a symbol, or whether an exchange recently cut leverage. Returns the current ladder per venue (tier, notional floor and cap, max leverage, maintenance margin rate) recorded daily by ByKaranteli, plus a change log. Pass symbol for one base asset (e.g. SOL) and venue for one exchange (bybit, okx, gate, htx, bitget, mexc). Without symbol, the first 30 rows of each list and the first 5 tiers of each ladder; pass symbol for every tier, or limit (up to 300).",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "description": "string, optional base asset, e.g. BTC",
+              "type": "string"
+            },
+            "venue": {
+              "description": "string, optional venue id, e.g. bybit",
+              "type": "string"
+            },
+            "limit": {
+              "description": "Optional. Rows per list without symbol (default 30).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Leverage tiers: max leverage and maintenance margin per perpetual on every venue"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_venue_markets",
+        "title": "Exchange coverage: OI, volume, funding and pegs across every exchange we snapshot",
+        "description": "Call this when the user asks about total open interest across exchanges, which venues hold the most OI, DEX versus CEX share, funding dispersion between venues, or stablecoin pegs. Returns the latest 10-minute snapshot aggregates across every perpetual and spot feed we poll (the coverage field lists them); pass symbol for one coin's per-venue rows. Without symbol, rows holds the 30 venue markets with the largest open interest; pass symbol, or limit (up to 250) for more.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "description": "string, optional base asset, e.g. BTC",
+              "type": "string"
+            },
+            "history_days": {
+              "description": "Return the hourly multi-venue open interest history (total, DEX share, OI-weighted funding) for this many days instead of the snapshot",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 90
+            },
+            "limit": {
+              "description": "Optional. Venue market rows without symbol, largest open interest first (default 30).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 250
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Exchange coverage: OI, volume, funding and pegs across every exchange we snapshot"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_lead_lag",
+        "title": "Venue lead-lag: who moves first (Coinbase, Kraken, Binance)",
+        "description": "Call this when the user asks which exchange leads price discovery or whether spot or perp moves first. Returns per-pair daily cross-correlations of one-minute returns at lags -3..+3 and the lead asymmetry, with the share of days each venue led. Each pair's daily rows cover the last 7 days (its summary covers the whole window); pass days (up to 30) for more.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "days": {
+              "description": "Optional. Daily rows per pair, newest kept (default 7, up to 30).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Venue lead-lag: who moves first (Coinbase, Kraken, Binance)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_iv_surface",
+        "title": "Options implied-volatility surface and 25-delta skew",
+        "description": "Call this when the user asks about implied volatility by strike or expiry, skew, put versus call IV, term structure of IV, or whether downside protection is expensive. Returns the IV surface (expiry x moneyness), per-expiry ATM / 25-delta put and call IV, skew and butterfly, and the constant-30d history, from the daily Deribit chain.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "currency": {
+              "description": "BTC or ETH, default BTC",
+              "type": "string",
+              "enum": [
+                "BTC",
+                "ETH"
+              ]
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Options implied-volatility surface and 25-delta skew"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_whale_tape",
+        "title": "Whale tape: $1M+ aggressive prints with 24h buy share",
+        "description": "Call this when the user asks about whale trades, large market orders, or whether big players are buying or selling right now. Returns recent $1M+ aggressive prints recorded live from our own sockets and 24h aggregates with the buy share.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Whale tape: $1M+ aggressive prints with 24h buy share"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_correlations",
+        "title": "Crypto correlation matrix",
+        "description": "Call this when the user asks how correlated two coins are, for decorrelated pairs, or how tightly alts track BTC. Returns the 30-day rolling Pearson correlation matrix of daily returns across the top perpetuals.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Crypto correlation matrix"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_new_listings",
+        "title": "New and delisted perpetual contracts",
+        "description": "Call this when the user asks what new perpetuals were listed, which exchange listed a coin first, or about delistings. Returns listings and delistings across every exchange the hourly scan covers.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "days": {
+              "description": "Window in days, 1-30 (default 30). Longer listing history is the listings dataset at bykaranteli.com/data.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "New and delisted perpetual contracts"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_macro_liquidity",
+        "title": "Macro liquidity: Fed funds, 10y, balance sheet, RRP, stablecoin supply",
+        "description": "Call this when the user asks about macro liquidity, the Fed balance sheet, reverse repo, rates or stablecoin supply in relation to crypto. Returns the recorded daily series and latest values. Without days, each series holds its newest 7 points; pass days for the daily series, and series for one key over a long window.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "days": {
+              "description": "Window in days, 30-4000; the route clamps to that range. Omit for the newest 7 points of each series.",
+              "type": "integer",
+              "minimum": 30,
+              "maximum": 4000
+            },
+            "series": {
+              "description": "Optional. One series key from the answer's series field, e.g. fred_walcl_busd.",
+              "type": "string",
+              "pattern": "^[a-z0-9_]{2,60}$"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Macro liquidity: Fed funds, 10y, balance sheet, RRP, stablecoin supply"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_network_health",
+        "title": "Bitcoin network health from our own node",
+        "description": "Call this when the user asks about Bitcoin hashrate, difficulty or block fees (our node runs blocksonly, so there is no mempool series). Returns the recorded daily series and latest values measured on ByKaranteli's own node. Without days, each series holds its newest 7 points; pass days for the daily series, and series for one key over a long window.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "days": {
+              "description": "Window in days, 30-4000; the route clamps to that range. Omit for the newest 7 points of each series.",
+              "type": "integer",
+              "minimum": 30,
+              "maximum": 4000
+            },
+            "series": {
+              "description": "Optional. One series key from the answer's series field, e.g. btc_hashrate_ehs.",
+              "type": "string",
+              "pattern": "^[a-z0-9_]{2,60}$"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Bitcoin network health from our own node"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_liqmap",
+        "title": "LiqMap: estimated liquidation clusters with real prints overlaid",
+        "description": "Call this when the user asks where liquidation clusters or liquidity pools sit for a perpetual, where leveraged longs/shorts would get liquidated, or for a liquidation heatmap reading. Returns the LiqMap snapshot for one symbol: modeled liquidation levels by price, zone aggregates and real liquidation prints from every liquidation venue ByKaranteli counts (listed on bykaranteli.com/coverage). On the Free plan the 24h view; on Builder and higher plans every timeframe from 1h to 30d. By default the 30 real levels nearest the price and the 30 newest real prints; pass detail=true for all of them.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "description": "Symbol like BTCUSDT (bare BTC accepted). Default BTCUSDT.",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{2,20}$"
+            },
+            "timeframe": {
+              "description": "Model window. Default 24h, the only one on the Free plan; Builder and higher plans get every window.",
+              "type": "string",
+              "enum": [
+                "1h",
+                "4h",
+                "12h",
+                "24h",
+                "3d",
+                "1w",
+                "30d"
+              ]
+            },
+            "detail": {
+              "description": "Optional. true: every real level and every real print (default false: the 30 nearest levels, the 30 newest prints).",
+              "type": "boolean"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "LiqMap: estimated liquidation clusters with real prints overlaid"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_tradfi_board",
+        "title": "TradFi perpetuals: stock, index and commodity perps on Binance",
+        "description": "Call this when the user asks about stock perpetuals (TSLA, NVDA, AAPL, gold, S&P 500...), tokenized-equity perps, TradFi perp funding rates, open interest, liquidations, which exchanges list a stock perp, or whether the equity session is open. Returns Binance's TradFi perpetual board: per contract mark, index, basis, funding, 24h change and volume, open interest, 24h recorded liquidations, other venues listing the same underlying, and the trading-session state per market. Filter by market (EQUITY, HK_EQUITY, KR_EQUITY, CN_EQUITY, COMMODITY, INDEX, PREMARKET) or one symbol. Without symbol, the first 30 contracts by open interest; pass symbol, or limit (up to 150) for more.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "market": {
+              "description": "Market filter: EQUITY | HK_EQUITY | KR_EQUITY | CN_EQUITY | COMMODITY | INDEX | PREMARKET",
+              "type": "string",
+              "pattern": "^[A-Z_]{3,16}$"
+            },
+            "symbol": {
+              "description": "One Binance TradFi symbol, e.g. TSLAUSDT",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{2,24}$"
+            },
+            "limit": {
+              "description": "Optional. Contracts without symbol, largest open interest first (default 30).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 150
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "TradFi perpetuals: stock, index and commodity perps on Binance"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_rsi_heatmap",
+        "title": "RSI heatmap: Wilder RSI(14) on eight timeframes for the top-400 crypto perps and every TradFi perp",
+        "description": "Call this when the user asks which coins are overbought or oversold, for a crypto RSI heatmap, multi-timeframe RSI, or one contract's RSI on 15m, 1h, 4h, 12h, 1d, 3d, 1w or 1M. Returns the live board for the top-400 Binance crypto perps by volume plus every TradFi perp, with overbought/oversold counts per interval. Filter by symbol or kind (crypto|tradfi), sort by an interval. Without symbol, the first 30 rows (by volume, or by the sort interval); pass limit (up to 400) for more, or order asc with sort for the most oversold first.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "description": "One Binance symbol, e.g. BTCUSDT",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{2,24}$"
+            },
+            "kind": {
+              "description": "crypto | tradfi",
+              "type": "string",
+              "enum": [
+                "crypto",
+                "tradfi"
+              ]
+            },
+            "sort": {
+              "description": "Interval to sort by, descending",
+              "type": "string",
+              "enum": [
+                "15m",
+                "1h",
+                "4h",
+                "12h",
+                "1d",
+                "3d",
+                "1w",
+                "1M"
+              ]
+            },
+            "order": {
+              "description": "Optional. With sort: desc (default, most overbought first) or asc (most oversold first).",
+              "type": "string",
+              "enum": [
+                "desc",
+                "asc"
+              ]
+            },
+            "limit": {
+              "description": "Optional. Rows without symbol (default 30).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 400
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "RSI heatmap: Wilder RSI(14) on eight timeframes for the top-400 crypto perps and every TradFi perp"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_cycle_indicators",
+        "title": "Bitcoin cycle indicators: Pi Cycle, Mayer, 200W MA, Puell, S2F",
+        "description": "Call this when the user asks whether Bitcoin is near a cycle top or bottom by the classic indicators, about the Pi Cycle Top, Mayer Multiple, 200-week moving average, 2-year MA multiplier, golden ratio multiple, profitable days, stock-to-flow, Puell Multiple or Bitfinex margin positioning. Returns the latest readings, the Pi Cycle cross dates on record, and optionally the daily series (recomputed nightly from a first-party close record since 2012). Levels, not forecasts.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "days": {
+              "description": "Window in days for the series (default 730)",
+              "type": "integer",
+              "minimum": 30,
+              "maximum": 10000
+            },
+            "include_points": {
+              "description": "Include the daily series (large). Default false: latest values and cross dates only.",
+              "type": "boolean"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Bitcoin cycle indicators: Pi Cycle, Mayer, 200W MA, Puell, S2F"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_hl_whales",
+        "title": "Hyperliquid whale tracker: top-300 accounts, long vs short, positions, changes",
+        "description": "Call this when the user asks what Hyperliquid whales are doing, whether the biggest Hyperliquid accounts are net long or short a coin, for the largest open positions with liquidation prices, or what large accounts just opened, closed or flipped. Returns the live board of the 300 largest accounts by equity (scanned every 5 minutes, addresses only) and with events the last 200 position changes. Without coin, the 30 largest coins and positions; pass coin, or limit (up to 200) for more.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "coin": {
+              "description": "One coin, e.g. BTC",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{1,24}$"
+            },
+            "events": {
+              "description": "Include the last 200 position change events",
+              "type": "boolean"
+            },
+            "limit": {
+              "description": "Optional. Coins and positions without coin, largest first (default 30).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Hyperliquid whale tracker: top-300 accounts, long vs short, positions, changes"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_positioning",
+        "title": "Positioning: long/short ratios, taker buy/sell and CVD across exchanges",
+        "description": "Call this when the user asks about the long/short ratio, whether retail or top traders are net long or short, the taker buy/sell ratio, or CVD (cumulative volume delta) for a perpetual. Returns exchange-published statistics for the 30 most traded Binance USDT perps on every perpetual venue the positioning board records (Binance global and top-trader ratios, Bybit share long, OKX ratios and taker volume, Gate account and top-trader ratios, HTX elite ratios, Bitget account and position ratios) and CVD series for BTC, ETH and SOL; refreshed every 15 minutes. Without symbol, the 10 most traded perps and the newest 24 points of each CVD series; pass symbol, limit or cvd_points for more.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "description": "One Binance symbol, e.g. BTCUSDT",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{2,24}$"
+            },
+            "limit": {
+              "description": "Optional. Perps without symbol, most traded first (default 10, up to 30).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            },
+            "cvd_points": {
+              "description": "Optional. Newest points per CVD series (1h and 5m); default 24 without symbol, every point with one.",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 288
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Positioning: long/short ratios, taker buy/sell and CVD across exchanges"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_desk_notes",
+        "title": "Desk notes: short dated observations the ByKaranteli desk wrote from its own recorded derivatives data",
+        "description": "Call this when the user asks what happened in crypto derivatives today or on a date, what the desk observed, what moved in funding, open interest, liquidations, options, ETF flows or exchange premiums, or wants a dated, quotable sentence with its number and time. Returns the desk's notes newest first: each is one observation written by the desk writer (an AI model) from the platform's own recorded data and checked against it before publishing, with its publish time in UTC, the card's data time, the desk's 0 to 10 news value, the board it read from, the coins it names and its permanent URL. Information about the data, never advice. Default the last 24 hours; pass day for one UTC day, since for a window up to 7 days back, type for one card type (funding-arb, liqmap-btc, event-liq-burst, ...), lang for zh, ru or ko text.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "day": {
+              "description": "One UTC day, YYYY-MM-DD",
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            "since": {
+              "description": "ISO time; notes published at or after it, at most 7 days back (ignored with day)",
+              "type": "string",
+              "maxLength": 40
+            },
+            "type": {
+              "description": "One card type, e.g. funding-arb, liqmap-btc, event-liq-burst",
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,60}$"
+            },
+            "lang": {
+              "description": "Text language (default en); a note without that translation comes back in English",
+              "type": "string",
+              "enum": [
+                "en",
+                "zh",
+                "ru",
+                "ko"
+              ]
+            },
+            "limit": {
+              "description": "Notes to return, 1..100 (default 50)",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Desk notes: short dated observations the ByKaranteli desk wrote from its own recorded derivatives data"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_turkey_premium",
+        "title": "Turkey Premium Index: what lira buyers pay above the world price, with TRY reference prices from Turkish venues",
+        "description": "Call this when the user asks about Bitcoin, Ether or USDT prices in Turkish lira, the Turkey premium, the USDT/TRY rate or dollar premium in Turkey, or which Turkish exchanges (BtcTurk, Bitlo, CoinTR, OKX TR, Binance TR, Bybit TR, Bitexen; KuCoin TR contributes the USDT pairs only) trade above or below the global price. Returns the live board: the Turkey Premium Index (what a lira buyer pays for bitcoin against the global dollar price at the official exchange rate, in bps) with its dollar leg and crypto leg, a 0-100 score (50 = world price) and regime, 24h and 7d averages and the same-sign streak; then five reference prices (median of eligible order books), per-venue book status, spread, depth and each venue's implied premium. Pass pair and history_days for 15-minute history of one pair. Without pair, the daily rows cover the last 7 days; pass pair, or daily_days (up to 30) for more.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "pair": {
+              "description": "Pair: BTC-TRY, ETH-TRY, USDT-TRY, BTC-USDT or ETH-USDT",
+              "type": "string",
+              "pattern": "^(BTC-TRY|ETH-TRY|USDT-TRY|BTC-USDT|ETH-USDT)$"
+            },
+            "history_days": {
+              "description": "Include 15-minute index history for the pair, 1..30 days",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            },
+            "daily_days": {
+              "description": "Optional. Days of daily rows, newest first (default 7 without pair, every recorded day with one).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Turkey Premium Index: what lira buyers pay above the world price, with TRY reference prices from Turkish venues"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_data_proof",
+        "title": "BYK Data Layer: on-chain proof that a ByKaranteli number was sealed, signed and anchored on Solana and Base",
+        "description": "Call this when the user asks whether ByKaranteli data can be verified or was changed afterwards, about the BYK Data Layer, on-chain proofs of market data, or wants the proof behind one sealed number. Every 5 minutes a catalog of derived feeds (funding composite, aggregate open interest, liquidations, depth within 2%, pressure scores, Kimchi and Turkey premiums) is sealed into one Merkle root, signed and written to Solana mainnet, and attested on Base once a day. With no arguments returns the stream overview: network, epochs and records sealed, final anchors and the newest epochs with explorer links. Pass feed and asset for one record's proof (value, 104-byte leaf, Merkle path, signed manifest, signature, Solana and Base anchors) at the newest epoch or at sequence; sequence alone for one epoch; catalog for the feed list. result ANCHORED means ByKaranteli signed it and an anchor is final; the protocol verdict is reached from the chains alone at https://bykaranteli.com/proof.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "feed": {
+              "description": "Feed id from the catalog, e.g. BYK.FUNDING.COMPOSITE.B",
+              "type": "string",
+              "pattern": "^BYK\\.[A-Z0-9_.]{3,60}$"
+            },
+            "asset": {
+              "description": "Asset of the feed: BTC, ETH, SOL, XRP, DOGE, BNB, USDT or ALL",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{2,10}$"
+            },
+            "sequence": {
+              "description": "Epoch sequence; omit for the newest",
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "catalog": {
+              "description": "true: list every sealed feed with its unit and methodology",
+              "type": "boolean"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "BYK Data Layer: on-chain proof that a ByKaranteli number was sealed, signed and anchored on Solana and Base"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_jupiter_perps",
+        "title": "Jupiter Perps (Solana): exact long/short OI, utilization, borrow rates, weekly top traders",
+        "description": "Call this when the user asks about Jupiter perpetuals on Solana: long versus short open interest per market (SOL, ETH, BTC) read from the on-chain custody state, pool utilization and hourly borrow rates, JLP pool AUM and APR, 24h volume, or the week's top traders by realized PnL. Pass base and history_days for the hourly OI history.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "base": {
+              "description": "Market base: SOL, ETH or BTC",
+              "type": "string",
+              "pattern": "^(SOL|ETH|BTC)$"
+            },
+            "history_days": {
+              "description": "Include hourly OI history for the base, 1..30 days",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Jupiter Perps (Solana): exact long/short OI, utilization, borrow rates, weekly top traders"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_market_profile",
+        "title": "Market Profile: daily TPO profile of a perpetual, point of control, value area, initial balance, naked POCs",
+        "description": "Call this when the user asks about a perpetual's Market Profile, TPO profile, point of control (POC), value area (VAH, VAL), initial balance or naked (untested) points of control. Returns one row per closed UTC day from ByKaranteli's own one-minute bars of the Binance USDT-M perpetual (30-minute TPO periods, buckets of 0.05% of the day's open, 70% value area, first-hour initial balance, volume point of control), the naked points of control of the last 60 recorded days and the latest day's profile per price bucket. Symbols without recorded minute bars return no_profile.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "description": "Ticker such as BTC or BTCUSDT (default BTC)",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{2,20}$"
+            },
+            "days": {
+              "description": "Closed UTC days, newest first, 1..30 (default 7)",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Market Profile: daily TPO profile of a perpetual, point of control, value area, initial balance, naked POCs"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_options_chain",
+        "title": "Options chain hour by hour: open interest and IV per expiry and strike, the change over 1h and 24h, the ATM IV path",
+        "description": "Call this when the user asks how the BTC or ETH option chain moved today or over the last day: open interest and mark IV per expiry and strike from ByKaranteli's own hourly capture of every listed venue, the change over the last hour and the last 24 hours, and the front expiry's ATM IV hour by hour. The Free plan lists the largest strikes; Builder and higher plans list every strike. Recorded from 2026-09-30, so the first days carry a short history.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "currency": {
+              "description": "BTC or ETH (default BTC)",
+              "type": "string",
+              "enum": [
+                "BTC",
+                "ETH"
+              ]
+            },
+            "venue": {
+              "description": "One venue or all (default all)",
+              "type": "string",
+              "enum": [
+                "all",
+                "deribit",
+                "bybit",
+                "binance",
+                "okx",
+                "delta"
+              ]
+            },
+            "expiry": {
+              "description": "Expiry as DDMONYY, e.g. 31OCT26 (default: every expiry)",
+              "type": "string",
+              "pattern": "^\\d{1,2}[A-Z]{3}\\d{2}$"
+            },
+            "strikes": {
+              "description": "top (largest strikes) or all (Builder and higher plans)",
+              "type": "string",
+              "enum": [
+                "top",
+                "all"
+              ]
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Options chain hour by hour: open interest and IV per expiry and strike, the change over 1h and 24h, the ATM IV path"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_hl_positions",
+        "title": "Hyperliquid tracked positions: the liquidation price map of the largest accounts per coin, against the LiqMap model",
+        "description": "Call this when the user asks where Hyperliquid whales would be liquidated, how much tracked notional sits at each price, how the largest accounts lean on a coin, or how their liquidation prices compare with the LiqMap model. The universe is the largest accounts by equity on Hyperliquid's public leaderboard, scanned every five minutes; the levels are their own liquidation prices bucketed around the mark. hours returns the hourly archive of level totals.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "coin": {
+              "description": "Coin as Hyperliquid names it, e.g. BTC, ETH, SOL (default BTC)",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{1,24}$"
+            },
+            "hours": {
+              "description": "Hours of archive to return, 1..720 (default 24)",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 720
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Hyperliquid tracked positions: the liquidation price map of the largest accounts per coin, against the LiqMap model"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_venue_share",
+        "title": "Venue share: each counted exchange's share of the recorded liquidations and of perpetual open interest",
+        "description": "Call this when the user asks which exchange sees the most liquidations, how that share moved this week or this month, or how perpetual open interest splits between venues. Shares over one, seven or thirty days from ByKaranteli's own hourly liquidation record (counted venues only, each with the day its record started) and the hourly open interest record.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "days": {
+              "description": "Window in days: 1, 7 or 30 (default 7)",
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Venue share: each counted exchange's share of the recorded liquidations and of perpetual open interest"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_tradfi_gaps",
+        "title": "Weekend and overnight gaps: stock, index and commodity perpetuals against the cash close, checkpoint by checkpoint",
+        "description": "Call this when the user asks what a stock, index or commodity perpetual did over the weekend or overnight while the cash market was closed, how far it sat from the last cash close at each checkpoint, how the venues disagreed, and what gap the next open then realised. From ByKaranteli's own ten-minute venue record; window weekend or night; one symbol or the whole board. Without symbol, the first 15 underlyings of the summary and of the latest window; pass symbol, or limit (up to 60) for more.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "window": {
+              "description": "weekend (Friday close to Monday open) or night (cash close to next open); default weekend",
+              "type": "string",
+              "enum": [
+                "weekend",
+                "night"
+              ]
+            },
+            "symbol": {
+              "description": "One underlying, e.g. TSLA or XAU (default: the whole board)",
+              "type": "string",
+              "pattern": "^[A-Z0-9.]{1,24}$"
+            },
+            "limit": {
+              "description": "Optional. Underlyings without symbol, in the board's order, for the summary and the latest window (default 15, up to 60).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Weekend and overnight gaps: stock, index and commodity perpetuals against the cash close, checkpoint by checkpoint"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_solana_perps",
+        "title": "Solana Perps board: open interest, 24h volume and hourly rates across six Solana perpetual venues (Jupiter, Pacifica, Phoenix, GM Trade, Velocity, Bullet)",
+        "description": "Call this when the user asks about perpetuals on Solana as a whole, which Solana perp DEX has the most open interest or volume, a market on Pacifica, Phoenix, GM Trade (GMX on Solana), Velocity (the Drift relaunch) or Bullet (funding, open interest, 24h volume, mark), or how Jupiter compares with the order-book venues. Returns the board read every 10 minutes: per-venue totals (one-sided open interest, both sides on pool venues, 24h volume, market count, median hourly rate, as_of), every market of every venue largest first with instrument type (perpetual, equity, index, commodity, fx), and optional hourly history of one market on any venue but Jupiter (7 days on the Free plan, 30 on Builder and higher plans; Jupiter history is get_jupiter_perps). Without venue, the 30 largest markets; pass venue, or limit (up to 300) for more.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "venue": {
+              "description": "Venue filter: jupiter, pacifica, phoenix, gmtrade, velocity or bullet",
+              "type": "string",
+              "pattern": "^(jupiter|pacifica|phoenix|gmtrade|velocity|bullet)$"
+            },
+            "symbol": {
+              "description": "Market symbol on the chosen venue (Pacifica when venue is not given) for hourly history, as the board lists it, e.g. SOL, SOL-PERP, SOL-USD, kBONK",
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]{1,24}$"
+            },
+            "history_days": {
+              "description": "Hourly history for the symbol, 1..30 days",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 30
+            },
+            "limit": {
+              "description": "Optional. Markets without venue, largest first (default 30).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 300
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Solana Perps board: open interest, 24h volume and hourly rates across six Solana perpetual venues (Jupiter, Pacifica, Phoenix, GM Trade, Velocity, Bullet)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_coverage",
+        "title": "Coverage registry: which venues and data types we collect, how, and how fresh",
+        "description": "Call this when the user asks which exchanges sit behind a ByKaranteli number, whether a feed is complete or sampled, since when a venue is collected, or how fresh the data is. Returns the live coverage registry: liquidation feeds per venue with kind and last record, snapshot feeds per venue and market, funding arbitrage legs, positioning sources, whale tape, spot minutes and the Hyperliquid whale scan with freshness. snapshots[].country is the jurisdiction only when the venue states one; it is null for most venues, so do not read null as unknown risk. By default the first 30 snapshot feeds, English notes only and no per-venue matrix cells; pass detail=true for the full registry.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "detail": {
+              "description": "Optional. true: every snapshot feed, the zh, ru and ko notes and the venue by product matrix cells (default false).",
+              "type": "boolean"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Coverage registry: which venues and data types we collect, how, and how fresh"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_orderbook_depth",
+        "title": "Spot order book depth: walls and 2% depth from every spot venue on the coverage page",
+        "description": "Call this when the user asks where the bid or ask walls are, how deep the spot order book is, whether buyers or sellers have more resting orders near price, or for an order book heatmap. Returns the books of every spot venue with a public book that the coverage page lists, binned into 0.1% buckets within 20% of mid (USD notional), the largest walls with venue split, 2% depth and book reach per venue, and optionally the summed 5-minute history; coins: BTC, ETH, SOL, XRP, DOGE, ADA, LINK, AVAX, LTC, BNB. Books whose size is not corroborated are recorded and returned per venue with in_aggregate false (listed in held_out) but not summed into the walls, 2% depth or history.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "description": "One coin, e.g. BTC (default BTC)",
+              "type": "string",
+              "pattern": "^[A-Z0-9]{2,12}$"
+            },
+            "hours": {
+              "description": "Include the summed 5-minute history for this many hours",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 24
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Spot order book depth: walls and 2% depth from every spot venue on the coverage page"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "get_series",
+        "title": "Recorded series: bars or points of one metric for one perpetual (price, OI, funding, CVD, liquidations, long/short, RSI and more)",
+        "description": "Call this when the user wants the history of one recorded metric for one perpetual as a time series: price candles, volume, perp or spot CVD, open interest, funding (one venue, or OI-weighted across every venue as funding_agg), liquidations, long/short ratios, RSI, the Coinbase premium, US spot ETF flows, borrow rates or Hyperliquid whale net flow, for charting, backtesting or \"what did X do over the last N days\". Returns the /api/series answer (points as [t, v], or [t, o, h, l, c, v] for price, with unit, kind, source and source_kind, the bars served and whether member depth applied) plus provenance. metric is one of: price, volume, cvd_perp, cvd_spot, oi, funding, funding_agg, liquidations, long_short, top_traders, rsi, premium, etf_flow, borrow, whale_net (unit, finest period and venue support of each: https://bykaranteli.com/api/series/metrics). The Free plan gets public depth: fewer bars and no bars under 15 minutes (1m, 3m, 5m, 10m); Builder and higher plans get member depth; the bar limits are in the same list. The answer names the venue it was read from (venue) and every venue a market-wide series sums (venues). Without from or limit, the newest 300 bars; pass from and to (ISO) for a window, or limit for more of the newest bars.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "metric": {
+              "type": "string",
+              "description": "string, metric key, e.g. price, oi, funding, liquidations (list: /api/series/metrics)"
+            },
+            "symbol": {
+              "description": "string, optional Binance USDT-M perp or coin, e.g. BTCUSDT or BTC (default BTCUSDT)",
+              "type": "string"
+            },
+            "period": {
+              "description": "string, optional bar period: 1m | 3m | 5m | 10m | 15m | 30m | 1h | 2h | 4h | 6h | 8h | 12h | 1d | 3d | 1w | 1M (default 1h; each metric has a finest period)",
+              "type": "string",
+              "enum": [
+                "1m",
+                "3m",
+                "5m",
+                "10m",
+                "15m",
+                "30m",
+                "1h",
+                "2h",
+                "4h",
+                "6h",
+                "8h",
+                "12h",
+                "1d",
+                "3d",
+                "1w",
+                "1M"
+              ]
+            },
+            "venue": {
+              "description": "string, optional venue id for price, oi, funding or borrow, e.g. okx (default binance)",
+              "type": "string"
+            },
+            "from": {
+              "description": "string, optional ISO start, e.g. 2026-09-01T00:00:00Z",
+              "type": "string"
+            },
+            "to": {
+              "description": "string, optional ISO end (default now)",
+              "type": "string"
+            },
+            "limit": {
+              "description": "number, optional newest bars, 10..5000; the plan's depth caps it (default 300 without from)",
+              "type": "number"
+            }
+          },
+          "required": [
+            "metric"
+          ]
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": true,
+          "title": "Recorded series: bars or points of one metric for one perpetual (price, OI, funding, CVD, liquidations, long/short, RSI and more)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "parse_alert_text",
+        "title": "Alert text to an alert recipe: turn a sentence like \"BTC funding above 0.05%\" into the recipe it describes",
+        "description": "Call this when the user describes an alert in words (\"tell me when ETH drops 5% in a day\", \"BTC funding above 5 bps\", \"liquidations over $20M in an hour\") and you want the exact recipe before creating it. Rule based, nothing is saved: returns recipe (name, scope, symbols, conditions of field, op, value, cooldownHours, channels) or null, confidence 0..1, a one-line summary to confirm with the user, and unresolved (what the text left open or what was assumed; timing words are not part of a recipe). A threshold the text does not state is never invented. English and tickers; at most 500 characters. Pass the returned conditions, scope, symbols and channels to create_alert_recipe once the user agrees.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "string, the alert in plain English, e.g. \"SOL funding below -0.01% or OI up 10%\""
+            }
+          },
+          "required": [
+            "text"
+          ]
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": false,
+          "title": "Alert text to an alert recipe: turn a sentence like \"BTC funding above 0.05%\" into the recipe it describes"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "list_alert_recipes",
+        "title": "Your alert recipes: every alert on your account with its conditions, scope, channels and when it last fired",
+        "description": "Call this when the user asks which alerts they have, whether an alert fired, or before deleting or changing one. Returns the account's alert recipes (id, name, scope, symbols, conditions, cooldown in hours, enabled, last fired, fire count, channels). Needs a signed-in account (OAuth sign-in or account key); reads nothing but this account.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": false,
+          "title": "Your alert recipes: every alert on your account with its conditions, scope, channels and when it last fired"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "create_alert_recipe",
+        "title": "Create an alert recipe (writes to your account)",
+        "description": "Call this when the user asks to be alerted when a metric crosses a threshold and has agreed to the exact condition (parse_alert_text turns their words into one). Saves an alert recipe on the account: it fires when every condition holds, delivers by Telegram first with email as fallback unless channels says otherwise, and waits cooldown_hours before it fires again for the same symbol. field is one of: mark_price, pressure_score, funding_rate_pct, oi24h_pct, basis_pct, price_change_24h_pct, liq_cluster_distance_pct, usdt_peg_min_usd, usdc_peg_min_usd, liq_1h_usd, rsi_4h, ls_ratio_global, book_imbalance_2pct_pct, withdrawal_paused_venues, max_leverage_min, borrow_apr_pct, hl_whale_long_share_pct; op is one of >= > <= < ==; percent fields take percent values (0.05 means 0.05%). Pass field, op and threshold for one condition, or conditions for up to 6. scope: watchlist (default), any, or symbols with symbols. The plan sets how many recipes an account keeps; past it the tool answers with the limit. Writes are rate limited per connection (sign-in or key) and each one is recorded on the account.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "field": {
+              "description": "string, one condition's metric, e.g. funding_rate_pct",
+              "type": "string"
+            },
+            "op": {
+              "description": "string, one condition's comparison: >= | > | <= | < | ==",
+              "type": "string",
+              "enum": [
+                ">=",
+                ">",
+                "<=",
+                "<",
+                "=="
+              ]
+            },
+            "threshold": {
+              "description": "number, one condition's threshold, e.g. 0.05",
+              "type": "number"
+            },
+            "conditions": {
+              "description": "array, optional up to 6 conditions {field, op, value}, all must hold (instead of field, op, threshold)",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "field": {
+                    "type": "string"
+                  },
+                  "op": {
+                    "type": "string",
+                    "enum": [
+                      ">=",
+                      ">",
+                      "<=",
+                      "<",
+                      "=="
+                    ]
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "field",
+                  "op",
+                  "value"
+                ]
+              }
+            },
+            "scope": {
+              "description": "string, optional: watchlist (default), any, symbols",
+              "type": "string",
+              "enum": [
+                "watchlist",
+                "any",
+                "symbols"
+              ]
+            },
+            "symbols": {
+              "description": "array, optional up to 20 symbols, e.g. [\"BTCUSDT\", \"ETH\"]; implies scope symbols",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "channels": {
+              "description": "array, optional delivery channels: telegram | email | push | webhook; empty means Telegram first, email as fallback",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "telegram",
+                  "email",
+                  "push",
+                  "webhook"
+                ]
+              }
+            },
+            "cooldown_hours": {
+              "description": "number, optional 1..168 hours before it fires again (default 24)",
+              "type": "number"
+            },
+            "name": {
+              "description": "string, optional name; default describes the condition",
+              "type": "string"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "openWorldHint": false,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "title": "Create an alert recipe (writes to your account)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "delete_alert_recipe",
+        "title": "Delete one of your alert recipes (writes to your account)",
+        "description": "Call this when the user asks to remove an alert. Deletes the alert recipe with this id from the account (list_alert_recipes shows the ids); an id that is not one of the account's recipes changes nothing and says so. Writes are rate limited per connection (sign-in or key) and each one is recorded on the account.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "string, the recipe id from list_alert_recipes"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "openWorldHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "title": "Delete one of your alert recipes (writes to your account)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "list_watchlists",
+        "title": "Your watchlists and the symbols on each",
+        "description": "Call this when the user asks what is on their watchlist, which lists they have, or before adding or removing a symbol. Returns the account's watchlists (id, name, symbol count) and, unless include_symbols is false, the symbols on each list in order. Needs a signed-in account (OAuth sign-in or account key); reads nothing but this account.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "include_symbols": {
+              "description": "boolean, optional: include each list's symbols (default true)",
+              "type": "boolean"
+            }
+          }
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": false,
+          "title": "Your watchlists and the symbols on each"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "add_watchlist_symbol",
+        "title": "Add a symbol to your watchlist (writes to your account)",
+        "description": "Call this when the user asks to watch, follow or add a coin to their watchlist. Adds the symbol to the list named by watchlist_id, else to the default list (or the only list the account has); a symbol already on the list stays once. Returns the list's symbols after the change. Writes are rate limited per connection (sign-in or key) and each one is recorded on the account.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "type": "string",
+              "description": "string, a Binance USDT-M perp or coin, e.g. SOLUSDT or SOL"
+            },
+            "watchlist_id": {
+              "description": "string, optional list id from list_watchlists (default: the default list)",
+              "type": "string"
+            }
+          },
+          "required": [
+            "symbol"
+          ]
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "openWorldHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "title": "Add a symbol to your watchlist (writes to your account)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "remove_watchlist_symbol",
+        "title": "Remove a symbol from your watchlist (writes to your account)",
+        "description": "Call this when the user asks to stop watching a coin or remove it from their watchlist. Removes the symbol from the list named by watchlist_id, else from the default list (or the only list the account has); a symbol that is not on the list changes nothing. Returns the list's symbols after the change. Writes are rate limited per connection (sign-in or key) and each one is recorded on the account.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "symbol": {
+              "type": "string",
+              "description": "string, the symbol to remove, e.g. SOLUSDT or SOL"
+            },
+            "watchlist_id": {
+              "description": "string, optional list id from list_watchlists (default: the default list)",
+              "type": "string"
+            }
+          },
+          "required": [
+            "symbol"
+          ]
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "openWorldHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "title": "Remove a symbol from your watchlist (writes to your account)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "list_tracked_addresses",
+        "title": "List the Hyperliquid addresses you follow (reads your account)",
+        "description": "Call this when the user asks which Hyperliquid addresses they follow, or what those addresses hold right now. Returns every followed address with its label, the positions last seen on it and the plan's address limit; following addresses is part of Terminal and the plans above it.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "annotations": {
+          "readOnlyHint": true,
+          "openWorldHint": false,
+          "title": "List the Hyperliquid addresses you follow (reads your account)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "add_tracked_address",
+        "title": "Follow a Hyperliquid address for position alerts (writes to your account)",
+        "description": "Call this when the user asks to follow, track or get alerts for a Hyperliquid address (0x followed by 40 hex characters). Every later position change of the address (opened, closed, increased, reduced, flipped) reaches the user's alert channels; the first sight is the baseline and sends nothing. Counted against the plan's address limit; the route answers terminal_required or limit_reached when it cannot add.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string",
+              "description": "string, 0x followed by 40 hex characters"
+            },
+            "label": {
+              "description": "string, optional name for the address, up to 40 characters",
+              "type": "string"
+            }
+          },
+          "required": [
+            "address"
+          ]
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "openWorldHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "title": "Follow a Hyperliquid address for position alerts (writes to your account)"
+        },
+        "execution": {
+          "taskSupport": "forbidden"
+        }
+      },
+      {
+        "name": "remove_tracked_address",
+        "title": "Stop following a Hyperliquid address (writes to your account)",
+        "description": "Call this when the user asks to stop following or tracking a Hyperliquid address. Takes the id from list_tracked_addresses; the address's alerts stop, its recorded events stay.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "string, the id from list_tracked_addresses"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "annotations": {
+          "readOnlyHint": false,
+          "openWorldHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "title": "Stop following a Hyperliquid address (writes to your account)"
         },
         "execution": {
           "taskSupport": "forbidden"
         }
       }
     ]
-  },
-  "jsonrpc": "2.0",
-  "id": 1
+  }
 }
