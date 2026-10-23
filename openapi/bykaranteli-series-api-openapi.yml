@@ -55,3 +55,9 @@ components:
       type: http
       scheme: bearer
       description: 'Account API key (bk_...). Free with a verified account: https://bykaranteli.com/dashboard/api'
+x-provenance:
+  method: harvested
+  publisher: ByKaranteli
+  source: https://bykaranteli.com/openapi.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
