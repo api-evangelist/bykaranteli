@@ -1,4 +1,4 @@
-# ByKaranteli (bykaranteli)
+# ByKaranteli
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,102 +66,163 @@
 
 A crypto-derivatives market-structure data service built on a deterministic crypto-futures signal engine. Its free, no-key public REST API surfaces funding rates/arbitrage, open interest, liquidation maps, options (Deribit), ETF flows, order-flow toxicity (VPIN), Coinbase premium, CFTC COT positioning, and Fear & Greed / BTC-dominance indices, plus live signal performance and per-symbol/strategy leaderboards. It also offers a hosted MCP server, x402 agent-payment endpoints, and CC0 datasets.
 
-**APIs.json:** [https://bykaranteli.apievangelist.com/apis.yml](https://bykaranteli.apievangelist.com/apis.yml)
+**Areas:** Cryptocurrency · Crypto Derivatives · Market Data · Funding Rates · Open Interest · Liquidations · Options · ETF Flows · Financial Data · MCP · x402 · Agents
 
-## Tags
+## ByKaranteli on APIs.io
 
-- Cryptocurrency
-- Crypto Derivatives
-- Market Data
-- Funding Rates
-- Open Interest
-- Liquidations
-- Options
-- ETF Flows
-- Financial Data
-- MCP
-- x402
-- Agents
+Everything profiled for ByKaranteli is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/bykaranteli/](https://apis.io/providers/bykaranteli/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (2)
 
-- **Created:** 2026-08-09
-- **Modified:** 2026-08-09
+- [ByKaranteli X402 API](https://apis.io/apis/bykaranteli/bykaranteli-x402-api/) — Per-call priced history and depth endpoints, settled in USDC over the x402 protocol on Solana and Base mainnet through the Coinbase CDP facilitator. 13…
+- [ByKaranteli Public API](https://apis.io/apis/bykaranteli/bykaranteli-public-api/) — The free, no-key public REST surface — 10 endpoints under /api/v1/public/ described by the provider's own self-describing manifest, plus the /api/public/…
 
-## APIs
+### Published properties
 
-### ByKaranteli X402 API
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-Per-call priced history and depth endpoints, settled in USDC over the x402 protocol on Solana and Base mainnet through the Coinbase CDP facilitator. 13 priced endpoints plus the free catalog at /api/x402, which is the authoritative price list. Verified 2026-08-11: the catalog lists 13 endpoints from $0.002 to $0.010, and a priced endpoint returns HTTP 402. These sell depth and history, never access.
+#### MCP servers (1)
 
-- **Human URL:** [https://bykaranteli.com/developers](https://bykaranteli.com/developers)
-- **Base URL:** `https://bykaranteli.com`
+Model Context Protocol servers that expose the API to agents.
 
-#### Tags
+- [bykaranteli](https://apis.io/servers/bykaranteli/bykaranteli/)
 
-- X402
+#### Agentic access (1)
 
-#### Properties
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- [OpenAPI](openapi/bykaranteli-x402-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/bykaranteli-x402-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/bykaranteli-x402-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Overlay](overlays/bykaranteli-x402-overlay.yaml)
-- [Examples](examples/_index.yml)
+- [Bykaranteli Agentic Access](https://apis.io/agentic-access/bykaranteli/bykaranteli-agentic-access/)
+
+#### Vocabulary (1)
+
+The provider's domain terms, defined.
+
+- [ByKaranteli crypto derivatives glossary Vocabulary](https://apis.io/vocabularies/bykaranteli/bykaranteli-vocabulary/)
+
+#### Examples (6)
+
+Example requests and responses.
+
+- [Bykaranteli Public Indices](https://apis.io/examples/bykaranteli/bykaranteli-public-indices/)
+- [Bykaranteli Public Pressure](https://apis.io/examples/bykaranteli/bykaranteli-public-pressure/)
+- [Bykaranteli Public Recent](https://apis.io/examples/bykaranteli/bykaranteli-public-recent/)
+- [Bykaranteli V1 Health](https://apis.io/examples/bykaranteli/bykaranteli-v1-health/)
+- [Bykaranteli V1 Leaderboard](https://apis.io/examples/bykaranteli/bykaranteli-v1-leaderboard/)
+- [Bykaranteli X402 Payment Required](https://apis.io/examples/bykaranteli/bykaranteli-x402-payment-required/)
+
+#### Collections (1)
+
+Postman and Open Collection request collections.
+
+- [ByKaranteli crypto derivatives data X402 API](https://apis.io/collections/bykaranteli/open-bykaranteli-x402-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Bykaranteli X402 Overlay](https://apis.io/overlays/bykaranteli/bykaranteli-x402-overlay/)
+
+#### Governance rules (1)
+
+Spectral rulesets for the provider's contracts.
+
+- [Moved to /providers/bykaranteli/](https://apis.io/rules/bykaranteli/bykaranteli-rules/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Bykaranteli Authentication](https://apis.io/security/bykaranteli/bykaranteli-authentication/)
+- [Bykaranteli Domain Security](https://apis.io/security/bykaranteli/bykaranteli-domain-security/)
+- [Bykaranteli Vulnerability Disclosure](https://apis.io/security/bykaranteli/bykaranteli-vulnerability-disclosure/)
+
+#### Plans and pricing (2)
+
+Published plans, tiers and prices.
+
+- [Bykaranteli Plans](https://apis.io/plans/bykaranteli/bykaranteli-plans/)
+- [Bykaranteli Plans Pricing](https://apis.io/plans/bykaranteli/bykaranteli-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Bykaranteli Rate Limits](https://apis.io/rate-limits/bykaranteli/bykaranteli-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Bykaranteli Finops](https://apis.io/finops/bykaranteli/bykaranteli-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.bykaranteli.com/)
 - [Documentation](https://bykaranteli.com/developers)
-- [L L Ms Txt](llms/bykaranteli-llms.txt)
-- [Tool Crosswalk](mcp/bykaranteli-tool-crosswalk.yml)
-- [A P I Catalog](well-known/bykaranteli-public-manifest.json)
-
-### ByKaranteli Public API
-
-The free, no-key public REST surface — 10 endpoints under /api/v1/public/ described by the provider's own self-describing manifest, plus the /api/public/ index endpoints. Verified 2026-08-11: unauthenticated, HTTP 200, `access-control-allow-origin: *`, 5-minute cache. NO OpenAPI is registered for this surface because the provider does not publish one — their openapi.json covers the x402 endpoints only. The manifest below is the machine-readable description that does exist; nothing here is reconstructed.
-
-- **Human URL:** [https://bykaranteli.com/developers](https://bykaranteli.com/developers)
-- **Base URL:** `https://bykaranteli.com`
-
-#### Tags
-
-- Market Data
-
-#### Properties
-
-- [Documentation](https://bykaranteli.com/developers)
-- [A P I Catalog](well-known/bykaranteli-public-manifest.json)
-- [Postman Collection](collections/bykaranteli-x402-api.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/bykaranteli-x402-api.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-## Common Properties
-
-- [M C P Server](mcp/bykaranteli-mcp.yml)
-- [Documentation](https://bykaranteli.com/developers)
-- [Agentic Access](agentic-access/bykaranteli-agentic-access.yml)
-- [Domain Security](security/bykaranteli-domain-security.yml)
-- [Developer Portal](https://bykaranteli.com/developers)
-- [API Reference](https://bykaranteli.com/developers)
-- [Getting Started](https://bykaranteli.com/guide)
-- [Support](https://t.me/bykaranteli_com)
-- [GitHub Organization](https://github.com/bykarantelicom)
+- [Getting started](https://bykaranteli.com/guide)
+- [API reference](https://bykaranteli.com/developers)
 - [Pricing](https://bykaranteli.com/pricing)
-- [Sign Up](https://bykaranteli.com/register)
-- [Login](https://bykaranteli.com/login)
-- [Status Page](https://bykaranteli.com/status)
-- [Changelog](changelog/bykaranteli-changelog.yml)
-- [Lifecycle](lifecycle/bykaranteli-lifecycle.yml)
-- [Authentication](authentication/bykaranteli-authentication.yml)
-- [Conventions](conventions/bykaranteli-conventions.yml)
-- [Error Catalog](errors/bykaranteli-problem-types.yml)
-- [Rate Limits](rate-limits/bykaranteli-rate-limits.yml)
-- [Plans](plans/bykaranteli-plans.yml)
-- [Fin Ops](finops/bykaranteli-finops.yml)
-- [Packages](packages/bykaranteli-packages.yml)
-- [Conformance](conformance/bykaranteli-conformance.yml)
-- [Vocabulary](vocabulary/bykaranteli-vocabulary.yml)
-- [Components](components/bykaranteli-components.yml)
-- [Agent Skill](skills/_index.yml)
+- [Sign up](https://bykaranteli.com/register)
+- [Support](https://t.me/bykaranteli_com)
+- [Security](https://bykaranteli.com/security)
+- [Terms of service](https://bykaranteli.com/terms)
+- [Privacy policy](https://bykaranteli.com/privacy)
+- [GitHub](https://github.com/bykarantelicom)
+- [Status](https://bykaranteli.com/status)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** ByKaranteli
-**Email:** support@bykaranteli.com
-**URL:** https://bykaranteli.com
+**Kin Score 61.1** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 68.3 |
+| Contract quality | 46.8 |
+| Contract governance | 33.3 |
+| Operational transparency | 65.8 |
+| Developer ergonomics | 63.7 |
+| Access clarity | 76.3 |
+
+**Agent readiness 39.4** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | na |
+| MCP Server | verified |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | na |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | documented (partial credit) |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | flavored (partial credit) |
+| Dry Run Mode | na |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 34.3** — Securities & Market Data
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/bykaranteli/](https://apis.io/providers/bykaranteli/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for ByKaranteli: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/bykaranteli/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
