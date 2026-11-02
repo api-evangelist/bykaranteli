@@ -1,0 +1,254 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-28'
+method: searched
+source: https://bykaranteli.com/pricing
+sources:
+- https://bykaranteli.com/pricing
+provenance:
+  tool: engine/economics/harvest_pricing.py
+  run: 20261028T141238
+  grounding: every price_text was found verbatim in the fetched page text
+audience: developer-api
+pricing_basis: tiered-subscription
+delivery:
+  delivery: managed
+  method: page
+  read: '2026-10-28'
+published: true
+note: Crypto derivatives data terminal + API plans; prices in USDC/USDT on Solana, prepaid, no auto-renew.
+plan_count: 12
+currency: USD
+plans:
+- name: Free account
+  price_text: $0
+  price: 0
+  currency: USD
+  period: month
+  unit: account
+  included_quota: 'One free API key: 30 requests a minute, 15,000 a month, public depth; 3 alerts'
+- name: Terminal
+  price_text: $29 / month
+  price: 29
+  currency: USD
+  period: month
+  unit: membership
+  included_quota: 25 alerts, member depth, API key 60 requests a minute, 150,000 a month
+- name: Terminal 3 months
+  price_text: 3 months $79
+  price: 79
+  currency: USD
+  period: one-time
+  unit: 3-month term
+  included_quota: $26.33 / month · save 9%
+- name: Terminal 6 months
+  price_text: 6 months $149
+  price: 149
+  currency: USD
+  period: one-time
+  unit: 6-month term
+  included_quota: $24.83 / month · save 14%
+- name: Terminal 12 months
+  price_text: 12 months $279
+  price: 279
+  currency: USD
+  period: one-time
+  unit: 12-month term
+  included_quota: $23.25 / month · save 20%
+- name: Free API
+  price_text: $0
+  price: 0
+  currency: USD
+  period: month
+  unit: API key
+  included_quota: 30 requests a minute, 15,000 a month, 1 key, public depth
+- name: Builder
+  price_text: $49 / month · $470 / year
+  currency: USD
+  period: month
+  unit: plan
+  included_quota: 300 requests a minute, 1,000,000 a month fair use, 2 keys, x402 1,000 calls a month
+  overage: raw records $0.10 a call; past fair use answers at Free rate (30 a minute)
+- name: Business
+  price_text: $149 / month · $1,430 / year
+  currency: USD
+  period: month
+  unit: plan
+  included_quota: 1,200 requests a minute, 3,000,000 a month fair use, 5 keys, commercial licence
+  overage: past fair use answers at Free rate (30 a minute)
+- name: Scale
+  price_text: $399 / month · $3,830 / year
+  currency: USD
+  period: month
+  unit: plan
+  included_quota: 3,000 requests a minute, 10,000,000 a month fair use, 10 keys
+  overage: past fair use answers at Free rate (30 a minute)
+- name: Enterprise
+  price_text: Custom from $4,800 / year
+  price: 4800
+  currency: USD
+  period: year
+  unit: plan
+  included_quota: Custom rate and key count, SLA, 50 WS connections
+- name: Ask BYK extra conversation
+  price_text: $0.10 a conversation
+  price: 0.1
+  currency: USD
+  period: per-use
+  unit: conversation
+  included_quota: beyond daily allowance, from prepaid balance
+- name: Deep answer
+  price_text: $0.50 from balance
+  price: 0.5
+  currency: USD
+  period: per-use
+  unit: answer
+  included_quota: stronger model, up to 8 data tools
+rate_limit_statements:
+- 'One free API key: 30 requests a minute, 15,000 a month, public depth'
+- 'An API key with the hobby allowance: 60 requests a minute, 150,000 a month, public depth'
+- 300 requests a minute, 1,000,000 a month fair use
+- 1,200 requests a minute, 3,000,000 a month fair use
+- 3,000 requests a minute, 10,000,000 a month fair use
+- 'Past it a paid key is never stopped: it answers at the Free rate (30 a minute) until the month resets,
+  with x-quota-state: slow on every answer'
+- A Free key over its quota gets 429 monthly_quota_exceeded until the calendar month resets (UTC)
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - free
+  - metered
+  - subscription
+  units:
+  - object
+  plans:
+  - name: Free account
+    access: other
+    model: metered
+    model_how: derived
+    units:
+    - object
+    periods:
+    - month
+  - name: Terminal
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Terminal 3 months
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - one-time
+  - name: Terminal 6 months
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - one-time
+  - name: Terminal 12 months
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - one-time
+  - name: Free API
+    access: other
+    model: free
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Builder
+    access: other
+    model: metered
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Business
+    access: other
+    model: metered
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Scale
+    access: other
+    model: metered
+    model_how: derived
+    units:
+    - other
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - year
+  - name: Ask BYK extra conversation
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: Deep answer
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: Public API
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: 1 month
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: 3 months
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: 6 months
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other
+  - name: 12 months
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - other

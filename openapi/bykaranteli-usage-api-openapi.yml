@@ -1,0 +1,40 @@
+openapi: 3.2.0
+info:
+  title: ByKaranteli crypto derivatives data Usage API
+  version: 1.0.0
+  description: 'Crypto derivatives market structure recorded around the clock. The public endpoints are free with an account key (30 requests a minute on the Free API plan; Builder, Business and Scale plans raise the rate, add member depth and include the x402 catalog: a monthly ceiling and a history window on Builder and Business, the whole archive on Scale, the raw record routes from Business). The /api/x402/* endpoints sell depth and history per call for anonymous agents.'
+  x-guidance: Endpoints under /api/public/*, /api/liqmap/public, /api/v1/public/datasets/* and /api/series take an account key in the Authorization header (Bearer bk_...); /api/v1/public/health, /api/v1/public/manifest, /api/v1/public/sitemap.json take none. Get a free key at https://bykaranteli.com/dashboard/api; plans at https://bykaranteli.com/developers#tiers. The /api/x402/* endpoints answer HTTP 402 with machine-readable payment requirements and settle in USDC on Solana or Base per successful response, or run unpaid under a Builder or higher key within the plan's catalog allowance (tier_required, raw_tier_required, history_window and x402_allowance_used name what the plan does not include, each with how to pay per call). A failed response settles nothing.
+  contact:
+    email: support@bykaranteli.com
+    url: https://bykaranteli.com/developers
+  license:
+    name: ByKaranteli Data Licence
+    url: https://bykaranteli.com/data#license
+servers:
+- url: https://bykaranteli.com
+tags:
+- name: Usage
+paths:
+  /api/v1/usage:
+    get:
+      summary: The calling key's plan, rate limit, monthly quota used and reset, today's…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Usage
+      operationId: getApiV1Usage
+      x-operation-id-source: derived
+components:
+  securitySchemes:
+    accountKey:
+      type: http
+      scheme: bearer
+      description: 'Account API key (bk_...). Free with a verified account: https://bykaranteli.com/dashboard/api'

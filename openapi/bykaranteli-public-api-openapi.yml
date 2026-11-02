@@ -1,0 +1,1188 @@
+openapi: 3.2.0
+info:
+  title: ByKaranteli crypto derivatives data Public API
+  version: 1.0.0
+  description: 'Crypto derivatives market structure recorded around the clock. The public endpoints are free with an account key (30 requests a minute on the Free API plan; Builder, Business and Scale plans raise the rate, add member depth and include the x402 catalog: a monthly ceiling and a history window on Builder and Business, the whole archive on Scale, the raw record routes from Business). The /api/x402/* endpoints sell depth and history per call for anonymous agents.'
+  x-guidance: Endpoints under /api/public/*, /api/liqmap/public, /api/v1/public/datasets/* and /api/series take an account key in the Authorization header (Bearer bk_...); /api/v1/public/health, /api/v1/public/manifest, /api/v1/public/sitemap.json take none. Get a free key at https://bykaranteli.com/dashboard/api; plans at https://bykaranteli.com/developers#tiers. The /api/x402/* endpoints answer HTTP 402 with machine-readable payment requirements and settle in USDC on Solana or Base per successful response, or run unpaid under a Builder or higher key within the plan's catalog allowance (tier_required, raw_tier_required, history_window and x402_allowance_used name what the plan does not include, each with how to pay per call). A failed response settles nothing.
+  contact:
+    email: support@bykaranteli.com
+    url: https://bykaranteli.com/developers
+  license:
+    name: ByKaranteli Data Licence
+    url: https://bykaranteli.com/data#license
+servers:
+- url: https://bykaranteli.com
+tags:
+- name: Public
+paths:
+  /api/public/indices:
+    get:
+      summary: Fear & Greed, BTC dominance, stablecoin flow, altseason, euphoria in one object
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicIndices
+      x-operation-id-source: derived
+  /api/public/euphoria:
+    get:
+      summary: Retail Euphoria Index with components
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicEuphoria
+      x-operation-id-source: derived
+  /api/public/heatmap:
+    get:
+      summary: Funding rate grid for the most traded Binance USDT-M perpetuals
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicHeatmap
+      x-operation-id-source: derived
+  /api/public/funding-arb:
+    get:
+      summary: Cross-exchange funding spreads, annualized net of taker fees
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicFundingArb
+      x-operation-id-source: derived
+  /api/public/pressure:
+    get:
+      summary: Composite long/short pressure scores per symbol
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicPressure
+      x-operation-id-source: derived
+  /api/public/pressure/{symbol}:
+    get:
+      summary: Pressure score and components for one symbol
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      parameters:
+      - name: symbol
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicPressureBySymbol
+      x-operation-id-source: derived
+  /api/public/oi:
+    get:
+      summary: 'Open interest board: 5-minute open interest per tracked perp with the 24h OI…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicOi
+      x-operation-id-source: derived
+  /api/public/top-movers:
+    get:
+      summary: 'Four headline lists of the last 24 hours: the biggest open interest moves, the…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicTopMovers
+      x-operation-id-source: derived
+  /api/public/liqmap:
+    get:
+      summary: Public 24h liquidation map for one symbol (see /api/liqmap/public)
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: symbol, timeframe.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicLiqmap
+      x-operation-id-source: derived
+  /api/public/indicators:
+    get:
+      summary: Bitcoin cycle indicators (Pi Cycle, Mayer, 200W/2Y MAs, golden ratio…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: days, points=0.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicIndicators
+      x-operation-id-source: derived
+  /api/public/rsi:
+    get:
+      summary: 'RSI heatmap: Wilder RSI(14) on 15m, 1h, 4h, 12h, 1d, 3d, 1w, 1M for the top-400…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: symbol, kind=crypto|tradfi, sort=.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicRsi
+      x-operation-id-source: derived
+  /api/public/hyperliquid-whales:
+    get:
+      summary: 'Hyperliquid whale tracker: top-1000 accounts by equity, long vs short notional…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: coin, events=1, address=0x....'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicHyperliquidWhales
+      x-operation-id-source: derived
+  /api/public/hyperliquid-positions:
+    get:
+      summary: 'Hyperliquid liquidation price map of one coin: the open positions of the…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: coin, hours<=720.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicHyperliquidPositions
+      x-operation-id-source: derived
+  /api/public/positioning:
+    get:
+      summary: 'Positioning board: long/short account and position ratios, taker buy/sell and…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: symbol.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicPositioning
+      x-operation-id-source: derived
+  /api/public/orderbook:
+    get:
+      summary: 'Spot order book depth: 29 venues (Binance, Coinbase, Kraken, Bybit, OKX, Gate…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: symbol, hours.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicOrderbook
+      x-operation-id-source: derived
+  /api/public/coverage:
+    get:
+      summary: 'Coverage registry: every venue and data type we collect, how, since when and…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicCoverage
+      x-operation-id-source: derived
+  /api/public/tradfi:
+    get:
+      summary: 'Binance TradFi perpetuals board: stocks, indices, commodities with funding…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: market, symbol.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicTradfi
+      x-operation-id-source: derived
+  /api/public/tradfi-gaps:
+    get:
+      summary: Weekend and overnight gaps of the stock, index and commodity perpetuals against…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: window (weekend | night), symbol.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicTradfiGaps
+      x-operation-id-source: derived
+  /api/public/liquidations:
+    get:
+      summary: Recorded 24h liquidations by side, symbol and venue, per-venue coverage kind…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicLiquidations
+      x-operation-id-source: derived
+  /api/public/venue-share:
+    get:
+      summary: Share of each counted liquidation venue in the recorded total over 24 hours, 7…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: days (1 | 7 | 30).'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicVenueShare
+      x-operation-id-source: derived
+  /api/public/tokenized-stocks:
+    get:
+      summary: 'Tokenized stocks: onchain wrappers per underlying (issuer, chain, price…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: underlying, issuer, chain, top<=200.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicTokenizedStocks
+      x-operation-id-source: derived
+  /api/public/insurance-funds:
+    get:
+      summary: 'Exchange insurance funds: the latest hourly reading per covered venue (USD…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: venue, days<=366, pools=0.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicInsuranceFunds
+      x-operation-id-source: derived
+  /api/public/liquidation-leaderboard:
+    get:
+      summary: Largest single liquidation prints of the last 24h, 7d or 30d across the counted…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: window=24h|7d|30d, limit<=100, days=7..90.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicLiquidationLeaderboard
+      x-operation-id-source: derived
+  /api/public/incidents:
+    get:
+      summary: Detected liquidation cascades with size, side and price path
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicIncidents
+      x-operation-id-source: derived
+  /api/public/options:
+    get:
+      summary: 'Options snapshot across Deribit, Bybit, Binance, OKX, Delta Exchange: walls…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: venue=all|deribit|bybit|binance|okx|delta.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicOptions
+      x-operation-id-source: derived
+  /api/public/options/chain:
+    get:
+      summary: 'Hourly options chain across Deribit, Bybit, Binance, OKX, Delta Exchange: open…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: currency=BTC|ETH, venue=all|deribit|bybit|binance|okx|delta, expiry=DDMONYY, strikes=top|all.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicOptionsChain
+      x-operation-id-source: derived
+  /api/public/options/surface:
+    get:
+      summary: IV surface by expiry and moneyness, 25-delta skew, constant-30d history
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: currency=BTC|ETH.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicOptionsSurface
+      x-operation-id-source: derived
+  /api/public/options-flow:
+    get:
+      summary: 'Options tape (Deribit and OKX): premium, strikes, put/call, blocks, venue'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicOptionsFlow
+      x-operation-id-source: derived
+  /api/public/etf:
+    get:
+      summary: 'US spot ETF flows: today''s provisional aggregate + per-fund table, 30 finalized…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicEtf
+      x-operation-id-source: derived
+  /api/public/flow:
+    get:
+      summary: 'Order-flow toxicity (VPIN) per tracked symbol: the current reading, the 90-day…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicFlow
+      x-operation-id-source: derived
+  /api/public/premium:
+    get:
+      summary: Coinbase premium, Kimchi and Turkey premium, cash-and-carry basis, daily history
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicPremium
+      x-operation-id-source: derived
+  /api/public/cot:
+    get:
+      summary: CFTC Commitments of Traders for crypto futures, weekly
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicCot
+      x-operation-id-source: derived
+  /api/public/events:
+    get:
+      summary: Measured BTC reactions to FOMC statements, CPI and jobs report releases (cpi…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicEvents
+      x-operation-id-source: derived
+  /api/public/slippage:
+    get:
+      summary: Live execution slippage ladders by order size
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicSlippage
+      x-operation-id-source: derived
+  /api/public/whales:
+    get:
+      summary: 'Whale tape: $1M+ aggressive prints, 24h aggregates'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicWhales
+      x-operation-id-source: derived
+  /api/public/quantum/watchset.csv:
+    get:
+      summary: Dormant-P2PK watch set as CSV with base-height provenance
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: CSV payload
+          content:
+            text/csv: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicQuantumWatchsetCsv
+      x-operation-id-source: derived
+  /api/public/altseason:
+    get:
+      summary: Altcoin Season Index, live reading and recorded history
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicAltseason
+      x-operation-id-source: derived
+  /api/public/themes:
+    get:
+      summary: Eight equal-weight narrative indices with baskets and daily points
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: points=0 to omit series.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicThemes
+      x-operation-id-source: derived
+  /api/public/factors:
+    get:
+      summary: 'Factor board: every recorded metric in its band with the conditional 7d BTC…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicFactors
+      x-operation-id-source: derived
+  /api/public/correlations:
+    get:
+      summary: 30-day rolling correlation matrix across major perps
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicCorrelations
+      x-operation-id-source: derived
+  /api/public/charge:
+    get:
+      summary: PsiCharge liquidity state and scorecard
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicCharge
+      x-operation-id-source: derived
+  /api/public/quantum:
+    get:
+      summary: Quantum-exposed Bitcoin supply, daily first-party measurement with provenance
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicQuantum
+      x-operation-id-source: derived
+  /api/public/macro:
+    get:
+      summary: 'Macro set from official sources (FRED): policy rates, inflation and jobs…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: days.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicMacro
+      x-operation-id-source: derived
+  /api/public/network:
+    get:
+      summary: Bitcoin network health series from our own node
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: days.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicNetwork
+      x-operation-id-source: derived
+  /api/public/listings:
+    get:
+      summary: New and delisted perpetual contracts across six exchanges
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: days.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicListings
+      x-operation-id-source: derived
+  /api/public/venues/markets:
+    get:
+      summary: 'Venue snapshot aggregates for every perpetual and spot feed we poll: OI, DEX…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: symbol.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicVenuesMarkets
+      x-operation-id-source: derived
+  /api/public/venues/oi-history:
+    get:
+      summary: Hourly total perp open interest across every venue we snapshot, DEX share and…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: days.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicVenuesOiHistory
+      x-operation-id-source: derived
+  /api/public/venues/lead-lag:
+    get:
+      summary: Venue lead-lag scoreboard from one-minute return cross-correlations
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicVenuesLeadLag
+      x-operation-id-source: derived
+  /api/public/context:
+    get:
+      summary: Band-conditioned context for a recorded metric
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: metric.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicContext
+      x-operation-id-source: derived
+  /api/public/smart-money/{symbol}:
+    get:
+      summary: Smart-money read for one symbol
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      parameters:
+      - name: symbol
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicSmartMoneyBySymbol
+      x-operation-id-source: derived
+  /api/public/symbols:
+    get:
+      summary: 'Symbols board: recorded price, 24h change, funding, open interest and pressure…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: format=csv, sort, top.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicSymbols
+      x-operation-id-source: derived
+  /api/public/market-profile:
+    get:
+      summary: Market Profile of one perpetual from our own minute bars, one row per closed…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: symbol (BTC or BTCUSDT), days<=400.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicMarketProfile
+      x-operation-id-source: derived
+  /api/public/dev-activity:
+    get:
+      summary: Public build log
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicDevActivity
+      x-operation-id-source: derived
+  /api/public/borrow-rates:
+    get:
+      summary: Hourly margin borrow rates per venue and asset, with the annualised APR
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicBorrowRates
+      x-operation-id-source: derived
+  /api/public/fees:
+    get:
+      summary: Maker and taker fee schedules per venue and market type, with the change log
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicFees
+      x-operation-id-source: derived
+  /api/public/desk:
+    get:
+      summary: 'Desk notes: short dated observations written by the desk writer (an AI model)…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: day, since, hours, type, lang, limit.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicDesk
+      x-operation-id-source: derived
+  /api/public/turkey-premium:
+    get:
+      summary: 'Turkey premium: TRY and USDT reference prices from eight Turkish spot venues…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: pair, days.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicTurkeyPremium
+      x-operation-id-source: derived
+  /api/public/jupiter:
+    get:
+      summary: 'Jupiter Perps (Solana): long/short open interest, utilization, borrow rates…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: base, days.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicJupiter
+      x-operation-id-source: derived
+  /api/public/solana-perps:
+    get:
+      summary: 'Solana Perps board: six Solana perp venues summed (Jupiter, Pacifica, Phoenix…'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: venue, symbol, days.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicSolanaPerps
+      x-operation-id-source: derived
+  /api/public/leverage-tiers:
+    get:
+      summary: Leverage tier ladders (position size versus maximum leverage) per venue and…
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: symbol, venue.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicLeverageTiers
+      x-operation-id-source: derived
+  /api/public/settlements:
+    get:
+      summary: Delivery settlement prices of dated futures per venue
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicSettlements
+      x-operation-id-source: derived
+  /api/public/venues/profile:
+    get:
+      summary: 'One venue''s profile: markets, fees, leverage, borrow, coverage and events'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: venue.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicVenuesProfile
+      x-operation-id-source: derived
+  /api/public/withdrawals:
+    get:
+      summary: 'Withdrawal status per venue and asset: paused, fees, minimums'
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: asset, venue.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiPublicWithdrawals
+      x-operation-id-source: derived
+  /api/v1/public/manifest:
+    get:
+      summary: Self-describing manifest of every public v1 endpoint
+      description: No key required.
+      security: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+      tags:
+      - Public
+      operationId: getApiV1PublicManifest
+      x-operation-id-source: derived
+  /api/v1/public/health:
+    get:
+      summary: 'Data liveness: liquidation stream and venue snapshot freshness verdict'
+      description: No key required.
+      security: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+      tags:
+      - Public
+      operationId: getApiV1PublicHealth
+      x-operation-id-source: derived
+  /api/v1/public/liquidation-map:
+    get:
+      summary: Liquidation map for one symbol (alias of /api/liqmap/public)
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: symbol, timeframe.'
+      security:
+      - accountKey: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiV1PublicLiquidationMap
+      x-operation-id-source: derived
+  /api/v1/public/datasets/{name}:
+    get:
+      summary: Dataset download, CSV or JSON (ByKaranteli Data Licence)
+      description: 'Free with an account key (Authorization: Bearer bk_...; a free key comes with any verified account, required for programs from 2026-09-10). Licence: personal and research use with attribution; commercial use with the Business plan. Query: format, symbol.'
+      security:
+      - accountKey: []
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+        '401':
+          description: A key header carried a value that is not a key (code key_required with reason; 2026-10-19) or an unknown or revoked account key (code invalid_key); never charged
+      tags:
+      - Public
+      operationId: getApiV1PublicDatasetsByName
+      x-operation-id-source: derived
+  /api/v1/public/sitemap.json:
+    get:
+      summary: JSON sibling of the XML sitemap
+      description: No key required.
+      security: []
+      responses:
+        '200':
+          description: JSON payload
+          content:
+            application/json: {}
+      tags:
+      - Public
+      operationId: getApiV1PublicSitemapJson
+      x-operation-id-source: derived
+components:
+  securitySchemes:
+    accountKey:
+      type: http
+      scheme: bearer
+      description: 'Account API key (bk_...). Free with a verified account: https://bykaranteli.com/dashboard/api'
