@@ -113,7 +113,7 @@ rate_limit_statements:
   with x-quota-state: slow on every answer'
 - A Free key over its quota gets 429 monthly_quota_exceeded until the calendar month resets (UTC)
 x-canonical:
-  generated: '2026-11-01'
+  generated: '2026-11-02'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - free

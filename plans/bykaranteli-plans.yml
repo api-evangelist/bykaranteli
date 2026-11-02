@@ -93,7 +93,7 @@ affiliate_revenue:
   model: 'sponsored exchange referrals; fee discount rebated by the exchange (30-45% quoted per partner)'
   note: 'Disclosed in the site footer and on the pricing page.'
 x-canonical:
-  generated: '2026-11-01'
+  generated: '2026-11-02'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - free

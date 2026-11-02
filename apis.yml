@@ -27,6 +27,9 @@ accessModel:
   trial: false
   try_now: true
   public: false
+  gated: none
+  gated_source:
+  - onboarding
   label: Freemium · Self-serve signup
   confidence: high
   source:
@@ -34,9 +37,8 @@ accessModel:
   - authentication
   - rate-limits
   - security
-  generated: '2026-09-02'
+  generated: '2026-11-02'
   method: derived
-
 created: '2026-08-09'
 
 modified: '2026-10-06'
