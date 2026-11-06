@@ -93,7 +93,7 @@ affiliate_revenue:
   model: 'sponsored exchange referrals; fee discount rebated by the exchange (30-45% quoted per partner)'
   note: 'Disclosed in the site footer and on the pricing page.'
 x-canonical:
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - free
@@ -101,6 +101,7 @@ x-canonical:
   - subscription
   units:
   - object
+  - period
   plans:
   - name: Free account
     access: other
@@ -115,7 +116,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - period
     periods:
     - month
   - name: Terminal 3 months
@@ -123,7 +124,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - period
     periods:
     - one-time
   - name: Terminal 6 months
@@ -131,7 +132,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - period
     periods:
     - one-time
   - name: Terminal 12 months
@@ -139,7 +140,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - period
     periods:
     - one-time
   - name: Free API

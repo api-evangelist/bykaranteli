@@ -113,7 +113,7 @@ rate_limit_statements:
   with x-quota-state: slow on every answer'
 - A Free key over its quota gets 429 monthly_quota_exceeded until the calendar month resets (UTC)
 x-canonical:
-  generated: '2026-11-02'
+  generated: '2026-11-06'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - free
@@ -121,6 +121,7 @@ x-canonical:
   - subscription
   units:
   - object
+  - period
   plans:
   - name: Free account
     access: other
@@ -135,7 +136,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - period
     periods:
     - month
   - name: Terminal 3 months
@@ -143,7 +144,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - period
     periods:
     - one-time
   - name: Terminal 6 months
@@ -151,7 +152,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - period
     periods:
     - one-time
   - name: Terminal 12 months
@@ -159,7 +160,7 @@ x-canonical:
     model: subscription
     model_how: derived
     units:
-    - other
+    - period
     periods:
     - one-time
   - name: Free API
